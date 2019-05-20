@@ -1,16 +1,24 @@
 package com.ricettadem.main;
 
 import com.ricettadem.csv.CsvParser;
+import com.ricettadem.model.Ricetta;
+import com.ricettadem.soap.InvioPrescrittoRicevuta;
+import com.ricettadem.soap.InvioPrescrittoRichiesta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 @ComponentScan(basePackages = "com.ricettadem")
 public class Application {
 
     @Autowired
     private CsvParser csvParser;
+
+    @Autowired
+    WebServiceTemplate webServiceTemplate;
 
     public static void main(String[] args) throws Exception{
         ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
@@ -21,6 +29,11 @@ public class Application {
     }
 
     private void run() throws Exception{
-        csvParser.readCsv("mirricettainvio.txt");
+        Ricetta ricetta = csvParser.readCsv("mirricettainvio.txt");
+
+        InvioPrescrittoRichiesta req1 = new InvioPrescrittoRichiesta();
+        req1.setCfMedico1("abcde");
+
+        InvioPrescrittoRicevuta resp1 = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(req1);
     }
 }
