@@ -1,5 +1,6 @@
 package com.ricettadem.main;
 
+import com.ricettadem.core.RequestHelper;
 import com.ricettadem.csv.CsvParser;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.soap.InvioPrescrittoRicevuta;
@@ -9,13 +10,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 @ComponentScan(basePackages = "com.ricettadem")
 public class Application {
 
     @Autowired
     private CsvParser csvParser;
+
+    @Autowired
+    private RequestHelper requestHelper;
 
     @Autowired
     WebServiceTemplate webServiceTemplate;
@@ -25,15 +28,13 @@ public class Application {
         Application app = context.getBean(Application .class);
 
         app.run();
-
     }
 
     private void run() throws Exception{
         Ricetta ricetta = csvParser.readCsv("mirricettainvio.txt");
 
-        InvioPrescrittoRichiesta req1 = new InvioPrescrittoRichiesta();
-        req1.setCfMedico1("abcde");
+        InvioPrescrittoRichiesta request = requestHelper.createInvioPrescrittoRichiesta(ricetta);
 
-        InvioPrescrittoRicevuta resp1 = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(req1);
+        InvioPrescrittoRicevuta resp1 = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
     }
 }
