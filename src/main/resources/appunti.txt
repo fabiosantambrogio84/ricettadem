@@ -1,0 +1,4 @@
+https://codenotfound.com/spring-ws-basic-authentication-example.html
+
+https://codenotfound.com/spring-ws-https-client-server-example.html
+
