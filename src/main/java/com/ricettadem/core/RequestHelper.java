@@ -13,7 +13,7 @@ import java.util.List;
 public class RequestHelper {
 
     public InvioPrescrittoRichiesta createInvioPrescrittoRichiesta(Ricetta ricetta){
-        InvioPrescrittoRichiesta request = null;
+        InvioPrescrittoRichiesta request = new InvioPrescrittoRichiesta();
         request.setPinCode(ricetta.getPincode());
         request.setCfMedico1(ricetta.getCodiceFiscaleMedico());
         request.setCfMedico2(ricetta.getCodiceFiscaleMedico2());
