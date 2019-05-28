@@ -41,9 +41,6 @@ import java.util.List;
 @Configuration
 public class SoapClientConfiguration {
 
-    @Value("${ws.uri.invio_ricetta}")
-    private String defaultUri;
-
     @Value("${ws.username}")
     private String username;
 
@@ -69,7 +66,7 @@ public class SoapClientConfiguration {
         WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
         webServiceTemplate.setMarshaller(jaxb2Marshaller());
         webServiceTemplate.setUnmarshaller(jaxb2Marshaller());
-        webServiceTemplate.setDefaultUri(defaultUri);
+//        webServiceTemplate.setDefaultUri(defaultUri);
         // register the LogHttpHeaderClientInterceptor
         ClientInterceptor[] interceptors =
                 new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};

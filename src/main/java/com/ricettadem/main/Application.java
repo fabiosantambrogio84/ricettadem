@@ -9,6 +9,7 @@ import com.ricettadem.soap.InvioPrescrittoRichiesta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,12 +31,14 @@ public class Application {
 
     private static Logger logger = LoggerFactory.getLogger(CsvParser.class);
 
+    @Value("${ws.uri.invio_ricetta}")
+    private String uriInvioRicetta;
+
     @Autowired
     private CsvParser csvParser;
 
     @Autowired
     private RequestHelper requestHelper;
-
 
     @Autowired
     WebServiceTemplate webServiceTemplate;
@@ -61,6 +64,7 @@ public class Application {
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");
+        webServiceTemplate.setDefaultUri(uriInvioRicetta);
         InvioPrescrittoRicevuta response = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
         logger.info("Soap request successfullt performed");
     }
