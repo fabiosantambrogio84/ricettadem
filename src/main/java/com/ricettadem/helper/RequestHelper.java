@@ -1,4 +1,4 @@
-package com.ricettadem.core;
+package com.ricettadem.helper;
 
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
@@ -7,7 +7,6 @@ import com.ricettadem.soap.ElencoDettagliPrescrizioniType;
 import com.ricettadem.soap.InvioPrescrittoRichiesta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,8 +18,6 @@ public class RequestHelper {
 
     private static final String CERTIFICATE_NAME = "certificate.cer";
 
-    @Autowired
-    private EncryptDecryptHelper encryptDecryptHelper;
 
     public InvioPrescrittoRichiesta createInvioPrescrittoRichiesta(Ricetta ricetta) throws Exception{
         InvioPrescrittoRichiesta request = new InvioPrescrittoRichiesta();
@@ -35,7 +32,7 @@ public class RequestHelper {
         request.setTestata2(ricetta.getInformazioniAggiuntive2());
         request.setNre(ricetta.getNre());
         request.setTipoRic(ricetta.getTipoRicetta());
-        request.setCodiceAss(encryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), CERTIFICATE_NAME));
+        request.setCodiceAss(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), CERTIFICATE_NAME));
         request.setCognNome(ricetta.getCognomeAssistito());
         request.setIndirizzo(ricetta.getIndirizzoAssistito());
         request.setOscuramDati(ricetta.getOscuramentoDati());

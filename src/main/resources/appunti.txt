@@ -3,3 +3,6 @@ https://codenotfound.com/spring-ws-basic-authentication-example.html
 https://codenotfound.com/spring-ws-https-client-server-example.html
 
 keytool -importcert -keystore client-truststore.jks -alias ricetta-dem-key -file /home/developer/Desktop/fabio_temp/Antonio/REL_PROD_PUBKEY.cer -storepass fabio19121984
+
+
+010A24369712031 fino a 010A24369712999

@@ -1,4 +1,4 @@
-package com.ricettadem.core;
+package com.ricettadem.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import java.io.FileInputStream;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.PublicKey;
@@ -16,12 +15,11 @@ import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@Component
 public class EncryptDecryptHelper {
 
     private static Logger logger = LoggerFactory.getLogger(EncryptDecryptHelper.class);
 
-    public String encrypt(String plainText, String fileCerPath) throws Exception{
+    public static String encrypt(String plainText, String fileCerPath) throws Exception{
         String result = plainText;
 
         Path path = Paths.get(ClassLoader.getSystemResource(fileCerPath).toURI());

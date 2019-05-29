@@ -1,11 +1,9 @@
-package com.ricettadem.csv;
+package com.ricettadem.helper;
 
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,24 +14,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component
-public class CsvParser {
+public class CsvHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(CsvParser.class);
+    private static Logger logger = LoggerFactory.getLogger(CsvHelper.class);
 
-    @Value("${csv.delimiter}")
-    private String delimiter;
-
-    @Value("${ricetta.num_campi}")
-    private Integer ricettaNumCampi;
-
-    @Value("${ricetta.prescrizione_num_campi}")
-    private Integer ricettaPrescrizioneNumCampi;
-
-    public Ricetta readCsv(String filePath) throws Exception{
+    public static Ricetta readRicettaCsv(String filePath, String delimiter, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi) throws Exception{
         Ricetta ricetta = null;
 
-        Path path = Paths.get(ClassLoader.getSystemResource(filePath).toURI());
+        Path path = Paths.get(filePath);
 
         logger.info("Processing file '" + filePath + "'");
 

@@ -1,38 +1,24 @@
 package com.ricettadem.configuration;
 
-import com.ricettadem.core.LogHttpHeaderClientInterceptor;
+import com.ricettadem.interceptors.LogHttpHeaderClientInterceptor;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
-import sun.misc.BASE64Encoder;
 
 import javax.net.ssl.SSLContext;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -48,9 +34,9 @@ public class SoapClientConfiguration {
     private String password;
 
     @Value("${ws.ssl.truststore}")
-    private Resource trustStore;
+    private File trustStore;
 
-    @Value("${ws.ssl.truststore_password}")
+    @Value("${ws.ssl.truststore-password}")
     private String trustStorePassword;
 
     @Bean
@@ -121,6 +107,6 @@ public class SoapClientConfiguration {
 
     public SSLContext sslContext() throws Exception {
         return SSLContextBuilder.create()
-                .loadTrustMaterial(trustStore.getFile(), trustStorePassword.toCharArray()).build();
+                .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
     }
 }

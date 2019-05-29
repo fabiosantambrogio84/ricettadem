@@ -1,9 +1,9 @@
 package com.ricettadem.main;
 
-import com.ricettadem.core.EncryptDecryptHelper;
-import com.ricettadem.core.RequestHelper;
-import com.ricettadem.csv.CsvParser;
+import com.ricettadem.helper.RequestHelper;
+import com.ricettadem.helper.CsvHelper;
 import com.ricettadem.model.Ricetta;
+import com.ricettadem.services.RicettaService;
 import com.ricettadem.soap.InvioPrescrittoRicevuta;
 import com.ricettadem.soap.InvioPrescrittoRichiesta;
 import org.slf4j.Logger;
@@ -15,33 +15,18 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
-import javax.crypto.Cipher;
-import java.io.FileInputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.PublicKey;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.Base64;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 @ComponentScan(basePackages = "com.ricettadem")
 public class Application {
 
-    private static Logger logger = LoggerFactory.getLogger(CsvParser.class);
-
-    @Value("${ws.uri.invio_ricetta}")
-    private String uriInvioRicetta;
+    private static Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Autowired
-    private CsvParser csvParser;
+    private RicettaService ricettaService;
 
-    @Autowired
-    private RequestHelper requestHelper;
-
-    @Autowired
-    WebServiceTemplate webServiceTemplate;
 
     public static void main(String[] args) throws Exception{
         logger.info("Application start");
@@ -49,27 +34,34 @@ public class Application {
         Application app = context.getBean(Application .class);
 
         logger.info("Application running");
-        app.runInvioRicettaDematerializzata();
+
+        String arg1 = null;
+        try{
+            arg1 = args[0];
+                app.run(arg1);
+            if(arg1 == null){
+                throw new RuntimeException("Specify the type of application to run");
+            }
+        } catch(Exception e){
+            logger.error("No argument was specified. Unable to run the application.");
+            throw e;
+        }
+
+
+
+
         logger.info("Application closed");
     }
 
-    private void runInvioRicettaDematerializzata() throws Exception{
-        logger.info("INVIO RICETTA DEMATERIALIZZATA");
-        logger.info("Parsing the file...");
-        Ricetta ricetta = csvParser.readCsv("mirricettainvio.txt");
-        logger.info("Ricetta retrieved from file: " + ricetta.toString());
-
-        logger.info("Creating the soap request...");
-        InvioPrescrittoRichiesta request = requestHelper.createInvioPrescrittoRichiesta(ricetta);
-        logger.info("Soap request successfully created");
-
-        logger.info("Performing the soap request...");
-        webServiceTemplate.setDefaultUri(uriInvioRicetta);
-        InvioPrescrittoRicevuta response = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
-        logger.info("Soap request successfullt performed");
+    private void run(String type) throws Exception{
+        if(type.toLowerCase().equals("invio-ricetta")){
+            try {
+                ricettaService.invia();
+            }catch(Exception e){
+                logger.error("Error during execution of 'INVIO-RICETTA'", e);
+                throw e;
+            }
+        }
     }
 
-    private void runRichiestaNre() throws Exception{
-        logger.info("RICHIESTA LOTTO NUMERI NRE");
-    }
 }

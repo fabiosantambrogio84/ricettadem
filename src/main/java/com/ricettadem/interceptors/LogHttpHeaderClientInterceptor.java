@@ -1,5 +1,6 @@
-package com.ricettadem.core;
+package com.ricettadem.interceptors;
 
+import com.ricettadem.core.HttpLoggingUtils;
 import org.springframework.ws.client.WebServiceClientException;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.MessageContext;
