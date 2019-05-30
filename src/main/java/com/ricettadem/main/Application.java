@@ -47,9 +47,6 @@ public class Application {
             throw e;
         }
 
-
-
-
         logger.info("Application closed");
     }
 

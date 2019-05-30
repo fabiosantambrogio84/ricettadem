@@ -2,7 +2,28 @@ https://codenotfound.com/spring-ws-basic-authentication-example.html
 
 https://codenotfound.com/spring-ws-https-client-server-example.html
 
+####################################################################################################################
+
 keytool -importcert -keystore client-truststore.jks -alias ricetta-dem-key -file /home/developer/Desktop/fabio_temp/Antonio/REL_PROD_PUBKEY.cer -storepass fabio19121984
 
+####################################################################################################################
 
 010A24369712031 fino a 010A24369712999
+
+####################################################################################################################
+
+Il file di risposte per le ricette si chiama MIRricettaRicevuta.txt (v. allegato), e mi bastano le prime 4 righe, separate da un CHR(13)   (cfr. allegato)
+
+Per gli errori: se si riscontra un errore, cioè Codice Esito Inserimento <>  0000,  il file che va creato si chiama MIRricettaRicevuta_errore.txt
+
+Il file di risposta per i lotti si chiama MIRRichiestaLottiRicevuta.txt, e deve essere fatto come l’allegato.
+
+####################################################################################################################
+
+Quello che ho è il MIRrichiestaLotti.txt, che scrivo io con codice regione (010), “1”, che significa che chiedo 1000 numeri (zero se ne chiedo solo 100, ma non succede mai), e il codice fiscale del richiedente.
+
+L’altro file, MIRRichiestaLottiRicevuta.txt, è quello che il programmino mi deve ritornare come risposta
+
+Ci deve essere, nella stessa directory, che è C:\WINDOC, anche il file SARuser.txt, che contiene nome utente SAR (“antonio.venza_cnu”) e password (“Tony1955_25”)
+
+####################################################################################################################

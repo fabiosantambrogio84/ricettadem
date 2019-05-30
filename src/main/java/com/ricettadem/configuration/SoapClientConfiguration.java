@@ -9,6 +9,8 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,20 +20,30 @@ import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.net.ssl.SSLContext;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Configuration
 public class SoapClientConfiguration {
 
-    @Value("${ws.username}")
-    private String username;
+    private static Logger logger = LoggerFactory.getLogger(SoapClientConfiguration.class);
 
-    @Value("${ws.password}")
-    private String password;
+//    @Value("${ws.username}")
+//    private String username;
+//
+//    @Value("${ws.password}")
+//    private String password;
+
+    @Value("${ws.credentials.file-path}")
+    private String credentialsFilePath;
 
     @Value("${ws.ssl.truststore}")
     private File trustStore;
@@ -83,11 +95,8 @@ public class SoapClientConfiguration {
 //        CredentialsProvider provider = new BasicCredentialsProvider();
 //        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
 //        provider.setCredentials(AuthScope.ANY, credentials);
-        String credentials = username + ":" + password;
-        String asB64 = Base64.getEncoder().encodeToString(credentials.getBytes("utf-8"));
 
-
-        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + asB64);
+        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
         List<Header> headers = new ArrayList<>();
         headers.add(header);
 
@@ -108,5 +117,30 @@ public class SoapClientConfiguration {
     public SSLContext sslContext() throws Exception {
         return SSLContextBuilder.create()
                 .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
+    }
+
+    private String createCredentials() throws Exception{
+        logger.info("Reading credentials...");
+
+        String base64Credentials = "";
+
+        List<String> list = new ArrayList<>();
+
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(credentialsFilePath))) {
+
+            //br returns as stream and convert it into a List
+            list = br.lines().collect(Collectors.toList());
+
+        } catch (IOException e) {
+            logger.error("", e);
+        }
+        String credentials = list.get(0);
+        credentials = credentials.replace(";", ":");
+
+        logger.info("Credentials retrieved: " + credentials);
+
+        base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes("utf-8"));
+
+        return base64Credentials;
     }
 }
