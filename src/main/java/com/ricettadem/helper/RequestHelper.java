@@ -7,6 +7,7 @@ import com.ricettadem.soap.ElencoDettagliPrescrizioniType;
 import com.ricettadem.soap.InvioPrescrittoRichiesta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class RequestHelper {
 
     private static Logger logger = LoggerFactory.getLogger(RequestHelper.class);
 
-    private static final String CERTIFICATE_NAME = "certificate.cer";
-
+    @Value("${certificate.file-path}")
+    private String certificateFilePath;
 
     public InvioPrescrittoRichiesta createInvioPrescrittoRichiesta(Ricetta ricetta) throws Exception{
         InvioPrescrittoRichiesta request = new InvioPrescrittoRichiesta();
@@ -32,7 +33,7 @@ public class RequestHelper {
         request.setTestata2(ricetta.getInformazioniAggiuntive2());
         request.setNre(ricetta.getNre());
         request.setTipoRic(ricetta.getTipoRicetta());
-        request.setCodiceAss(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), CERTIFICATE_NAME));
+        request.setCodiceAss(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), certificateFilePath));
         request.setCognNome(ricetta.getCognomeAssistito());
         request.setIndirizzo(ricetta.getIndirizzoAssistito());
         request.setOscuramDati(ricetta.getOscuramentoDati());

@@ -2,12 +2,9 @@ package com.ricettadem.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import java.io.FileInputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -22,19 +19,27 @@ public class EncryptDecryptHelper {
     public static String encrypt(String plainText, String fileCerPath) throws Exception{
         String result = plainText;
 
-        Path path = Paths.get(ClassLoader.getSystemResource(fileCerPath).toURI());
+//        Path path = Paths.get(ClassLoader.getSystemResource(fileCerPath).toURI());
+        FileInputStream fis = null;
 
-        FileInputStream fis = new FileInputStream(path.toFile());
-        CertificateFactory cf = CertificateFactory.getInstance("X509");
-        X509Certificate cert = (X509Certificate) cf.generateCertificate(fis);
-        PublicKey publicKey = cert.getPublicKey();
+        try{
+            fis = new FileInputStream(fileCerPath);
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            X509Certificate cert = (X509Certificate) cf.generateCertificate(fis);
+            PublicKey publicKey = cert.getPublicKey();
 
-        Cipher encryptCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            Cipher encryptCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
-        byte[] cipherText = encryptCipher.doFinal(plainText.getBytes(UTF_8));
+            byte[] cipherText = encryptCipher.doFinal(plainText.getBytes(UTF_8));
 
-        result = Base64.getEncoder().encodeToString(cipherText);
+            result = Base64.getEncoder().encodeToString(cipherText);
+        } catch(Exception e){
+            logger.error("Error encrypting the string '"+plainText+"'",e);
+            throw e;
+        } finally{
+            fis.close();
+        }
 
         return result;
     }
