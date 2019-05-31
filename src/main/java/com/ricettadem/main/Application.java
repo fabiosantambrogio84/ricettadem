@@ -1,23 +1,12 @@
 package com.ricettadem.main;
 
-import com.ricettadem.helper.RequestHelper;
-import com.ricettadem.helper.CsvHelper;
-import com.ricettadem.model.Ricetta;
 import com.ricettadem.services.RicettaService;
-import com.ricettadem.soap.InvioPrescrittoRicevuta;
-import com.ricettadem.soap.InvioPrescrittoRichiesta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.ws.client.core.WebServiceTemplate;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 
 @ComponentScan(basePackages = "com.ricettadem")
 public class Application {

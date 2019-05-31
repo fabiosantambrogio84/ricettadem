@@ -3,7 +3,7 @@ package com.ricettadem.services;
 import com.ricettadem.helper.CsvHelper;
 import com.ricettadem.helper.RequestHelper;
 import com.ricettadem.model.Ricetta;
-import com.ricettadem.soap.*;
+import com.ricettadem.soap.invioPrescritto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

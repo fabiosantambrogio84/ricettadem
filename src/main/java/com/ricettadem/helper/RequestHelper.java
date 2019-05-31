@@ -2,9 +2,11 @@ package com.ricettadem.helper;
 
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
-import com.ricettadem.soap.DettaglioPrescrizioneType;
-import com.ricettadem.soap.ElencoDettagliPrescrizioniType;
-import com.ricettadem.soap.InvioPrescrittoRichiesta;
+import com.ricettadem.model.RichiestaLottiNre;
+import com.ricettadem.soap.invioPrescritto.DettaglioPrescrizioneType;
+import com.ricettadem.soap.invioPrescritto.ElencoDettagliPrescrizioniType;
+import com.ricettadem.soap.invioPrescritto.InvioPrescrittoRichiesta;
+import com.ricettadem.soap.richiestaLottiNre.LottoRichiestaNRE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +92,14 @@ public class RequestHelper {
             }
         }
         request.setElencoDettagliPrescrizioni(elencoDettagliPrescrizioniType);
+
+        return request;
+    }
+
+    public LottoRichiestaNRE createRichiestaLottiNreRichiesta(RichiestaLottiNre richiestaLottiNre) throws Exception{
+        LottoRichiestaNRE request = new LottoRichiestaNRE();
+        request.setCodRegione(richiestaLottiNre.getCodiceRegione());
+        request.setIdentificativoLotto(richiestaLottiNre.getParamDimensioneLotto());
 
         return request;
     }
