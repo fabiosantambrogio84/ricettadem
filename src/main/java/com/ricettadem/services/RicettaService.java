@@ -38,14 +38,11 @@ public class RicettaService {
     @Value("${ricetta.request.file-path}")
     private String ricettaFilePath;
 
-    @Value("${ricetta.response.folder-path}")
-    private String ricettaResponseFolderPath;
+    @Value("${ricetta.response.ok.file-path}")
+    private String ricettaResponseFilePath;
 
-    @Value("${ricetta.response.ok.file-name}")
-    private String ricettaResponseFileName;
-
-    @Value("${ricetta.response.ko.file-name}")
-    private String ricettaErrorResponseFileName;
+    @Value("${ricetta.response.ko.file-path}")
+    private String ricettaErrorResponseFilePath;
 
     @Autowired
     private RequestHelper requestHelper;
@@ -78,8 +75,8 @@ public class RicettaService {
 
         BufferedWriter bw = null;
         try{
-            if(codiceEsitoInserimentoOutput != null && codiceEsitoInserimentoOutput.equals(ESITO_OK)){
-                File responseFile = new  File(ricettaResponseFolderPath + "/" + ricettaResponseFileName);
+            if(response.getCodEsitoInserimento() != null && response.getCodEsitoInserimento().equals(ESITO_OK)){
+                File responseFile = new  File(ricettaResponseFilePath);
                 if(responseFile != null && responseFile.exists()){
                     responseFile.delete();
                 }
@@ -97,7 +94,7 @@ public class RicettaService {
             } else{
                 logger.info("Creating the error response file...");
 
-                File errorResponseFile = new  File(ricettaResponseFolderPath + "/" + ricettaErrorResponseFileName);
+                File errorResponseFile = new  File(ricettaErrorResponseFilePath);
                 if(errorResponseFile != null && errorResponseFile.exists()){
                     errorResponseFile.delete();
                 }

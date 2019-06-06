@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+
 @Service
 public class RichiestaLottiNreService {
 
@@ -61,97 +65,47 @@ public class RichiestaLottiNreService {
 
         logger.info("Creating the response file...");
 
-//        String codRegioneOutput = "Codice Regione: " + response.get;
-//        String codiceAutenticazioneOutput = "Codice Autenticazione: " + response.getCodAutenticazione();
-//        String dataInserimentoOutput = "Data Inserimento: " + response.getDataInserimento();
-//        String codiceEsitoInserimentoOutput = "Codice Esito Inserimento: " + response.getCodEsitoInserimento();
-//
-//        BufferedWriter bw = null;
-//        try{
-//            if(codiceEsitoInserimentoOutput != null && codiceEsitoInserimentoOutput.equals(ESITO_OK)){
-//                File responseFile = new  File(ricettaResponseFolderPath + "/" + ricettaResponseFileName);
-//                if(responseFile != null && responseFile.exists()){
-//                    responseFile.delete();
-//                }
-//                FileWriter fw = new FileWriter(responseFile, true);
-//                bw = new BufferedWriter(fw);
-//
-//                bw.write(nreOutput);
-//                bw.newLine();
-//                bw.write(codiceAutenticazioneOutput);
-//                bw.newLine();
-//                bw.write(dataInserimentoOutput);
-//                bw.newLine();
-//                bw.write(codiceEsitoInserimentoOutput);
-//
-//            } else{
-//                logger.info("Creating the error response file...");
-//
-//                File errorResponseFile = new  File(ricettaResponseFolderPath + "/" + ricettaErrorResponseFileName);
-//                if(errorResponseFile != null && errorResponseFile.exists()){
-//                    errorResponseFile.delete();
-//                }
-//                FileWriter fw = new FileWriter(errorResponseFile, true);
-//                bw = new BufferedWriter(fw);
-//
-//                bw.write(nreOutput);
-//                bw.newLine();
-//                bw.write(codiceAutenticazioneOutput);
-//                bw.newLine();
-//                bw.write(dataInserimentoOutput);
-//                bw.newLine();
-//                bw.write(codiceEsitoInserimentoOutput);
-//                bw.newLine();
-//
-//                // Errori
-//                ElencoErroriRicetteType elencoErroriRicetteType = response.getElencoErroriRicette();
-//                if(elencoErroriRicetteType != null){
-//                    List<ErroreRicettaType> erroriRicettaType = elencoErroriRicetteType.getErroreRicetta();
-//                    if(erroriRicettaType != null && !erroriRicettaType.isEmpty()){
-//                        bw.newLine();
-//                        bw.write("Elenco Errori:");
-//                        bw.newLine();
-//                        for(ErroreRicettaType erroreRicettaType: erroriRicettaType){
-//                            bw.write("Errore:");
-//                            bw.newLine();
-//                            bw.write("Codice Esito: " + erroreRicettaType.getCodEsito());
-//                            bw.newLine();
-//                            bw.write("Esito: " + erroreRicettaType.getEsito());
-//                            bw.newLine();
-//                            bw.write("Progr. Presc.: " + erroreRicettaType.getProgPresc());
-//                            bw.newLine();
-//                            bw.write("Tipo Errore: " + erroreRicettaType.getTipoErrore());
-//                            bw.newLine();
-//                        }
-//                    }
-//                }
-//                // Comunicazioni
-//                ElencoComunicazioniType elencoComunicazioniType = response.getElencoComunicazioni();
-//                if(elencoComunicazioniType != null){
-//                    List<ComunicazioneType> comunicazioneTypes = elencoComunicazioniType.getComunicazione();
-//                    if(comunicazioneTypes != null && !comunicazioneTypes.isEmpty()){
-//                        bw.newLine();
-//                        bw.write("Elenco Comunicazioni:");
-//                        bw.newLine();
-//                        for(ComunicazioneType comunicazioneType : comunicazioneTypes){
-//                            bw.write("Comunicazione:");
-//                            bw.newLine();
-//                            bw.write("Codice: " + comunicazioneType.getCodice());
-//                            bw.newLine();
-//                            bw.write("Messaggio: " + comunicazioneType.getMessaggio());
-//                            bw.newLine();
-//                        }
-//                    }
-//                }
-//            }
-//
-//        } catch(Exception e){
-//            bw.close();
-//            logger.error("Error creating response file", e);
-//            throw e;
-//        } finally{
-//            bw.close();
-//        }
+        String codRegioneOutput = "Codice Regione: " + response.getCodRegione();
+        String codRaggruppamentoLottoOutput = "Codice Raggruppamento Lotto: " + response.getCodRagLotto();
+        String idLottoOutput = "Identificativo Lotto: " + response.getIdentificativoLotto();
+        String codLottoOutput = "Codice Lotto: " + response.getCodLotto();
+        String codEsitoRichiestaOutput = "Codice Esito Richiesta: " + response.getCodEsito();
+        String esitoRichiestaOutput = "Esito Richiesta: " + response.getEsito();
+
+        BufferedWriter bw = null;
+        try{
+            File responseFile = null;
+            if(response.getCodEsito() != null && response.getCodEsito().equals(ESITO_OK)) {
+                responseFile = new File(richiestaLottiNreResponseFilePath);
+            } else{
+                logger.info("Creating the error response file...");
+                responseFile = new File(richiestaLottiNreErrorResponseFilePath);
+            }
+            if(responseFile != null && responseFile.exists()){
+                responseFile.delete();
+            }
+            FileWriter fw = new FileWriter(responseFile, true);
+            bw = new BufferedWriter(fw);
+
+            bw.write(codRegioneOutput);
+            bw.newLine();
+            bw.write(codRaggruppamentoLottoOutput);
+            bw.newLine();
+            bw.write(idLottoOutput);
+            bw.newLine();
+            bw.write(codLottoOutput);
+            bw.newLine();
+            bw.write(codEsitoRichiestaOutput);
+            bw.newLine();
+            bw.write(esitoRichiestaOutput);
+
+        } catch(Exception e){
+            bw.close();
+            logger.error("Error creating response file", e);
+            throw e;
+        } finally{
+            bw.close();
+        }
 
         logger.info("Response file successfully created");
     }

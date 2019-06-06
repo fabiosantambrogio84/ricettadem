@@ -77,6 +77,20 @@
                             </schemaIncludes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>annulla-prescritto</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatePackage>com.ricettadem.soap.annullaPrescritto</generatePackage>
+                            <generateDirectory>${project.basedir}/src/main/java</generateDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/resources/wsdl/annullaPrescritto</schemaDirectory>
+                            <schemaIncludes>
+                                <include>*.wsdl</include>
+                            </schemaIncludes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
