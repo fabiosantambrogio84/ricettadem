@@ -49,7 +49,7 @@ public class RichiestaLottiNreService {
 
 
     public void invia() throws Exception{
-        logger.info("INVIO RICHISTA LOTTI NRE");
+        logger.info("INVIO RICHIESTA LOTTI NRE");
         logger.info("Parsing the file...");
         RichiestaLottiNre richiestaLottiNre = CsvHelper.readRichiestaLottiNreCsv(richiestaLottiNreFilePath, delimiter, richiestaLottiNreNumCampi);
         logger.info("Richiesta lotti nre retrieved from file: " + richiestaLottiNre.toString());

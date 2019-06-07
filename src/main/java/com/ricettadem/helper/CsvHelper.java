@@ -1,5 +1,6 @@
 package com.ricettadem.helper;
 
+import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
@@ -169,5 +170,46 @@ public class CsvHelper {
         }
 
         return richiestaLottiNre;
+    }
+
+    public static AnnullaRicetta readAnnullaRicettaCsv(String filePath, String delimiter, Integer annullaRicettaNumCampi) throws Exception {
+        AnnullaRicetta annullaRicetta = null;
+
+        Path path = Paths.get(filePath);
+
+        logger.info("Processing file '" + filePath + "'");
+
+        List<List<String>> allValues = new ArrayList<>();
+
+        if (Files.exists(path)) {
+            try (Stream<String> lines = Files.lines(path)) {
+                allValues = lines
+                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
+                        .collect(Collectors.toList());
+            }
+        }
+        if (!allValues.isEmpty()) {
+            List<String> values = allValues.get(0);
+            if (!values.isEmpty()) {
+                logger.info("The file contains " + values.size() + " elements");
+                if (values.size() < annullaRicettaNumCampi) {
+                    throw new RuntimeException("Il file in ingresso non contiene tutti i campi necessari per creare l'annullamento di una ricetta");
+                } else {
+                    // Creo l'annulla ricetta
+                    annullaRicetta = new AnnullaRicetta();
+                    annullaRicetta.setPinCode(values.get(0));
+                    annullaRicetta.setCodiceFiscale(values.get(1));
+                    annullaRicetta.setNumeroRicetta(values.get(2));
+
+                    logger.info("Richiesta lotti nre successfully created: " + annullaRicetta.toString());
+                }
+            } else {
+                throw new RuntimeException("Il file in ingresso è vuoto");
+            }
+        } else {
+            throw new RuntimeException("Il file in ingresso è vuoto");
+        }
+
+        return annullaRicetta;
     }
 }

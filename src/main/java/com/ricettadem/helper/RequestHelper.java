@@ -1,8 +1,10 @@
 package com.ricettadem.helper;
 
+import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
+import com.ricettadem.soap.annullaPrescritto.AnnullaPrescrittoRichiesta;
 import com.ricettadem.soap.invioPrescritto.DettaglioPrescrizioneType;
 import com.ricettadem.soap.invioPrescritto.ElencoDettagliPrescrizioniType;
 import com.ricettadem.soap.invioPrescritto.InvioPrescrittoRichiesta;
@@ -100,6 +102,15 @@ public class RequestHelper {
         LottoRichiestaNRE request = new LottoRichiestaNRE();
         request.setCodRegione(richiestaLottiNre.getCodiceRegione());
         request.setIdentificativoLotto(richiestaLottiNre.getParamDimensioneLotto());
+
+        return request;
+    }
+
+    public AnnullaPrescrittoRichiesta createAnnullaRicettaRichiesta(AnnullaRicetta annullaRicetta) throws Exception{
+        AnnullaPrescrittoRichiesta request = new AnnullaPrescrittoRichiesta();
+        request.setPinCode(annullaRicetta.getPinCode());
+        request.setCfMedico(annullaRicetta.getCodiceFiscale());
+        request.setNre(annullaRicetta.getNre());
 
         return request;
     }
