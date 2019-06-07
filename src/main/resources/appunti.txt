@@ -27,3 +27,52 @@ L’altro file, MIRRichiestaLottiRicevuta.txt, è quello che il programmino mi d
 Ci deve essere, nella stessa directory, che è C:\WINDOC, anche il file SARuser.txt, che contiene nome utente SAR (“antonio.venza_cnu”) e password (“Tony1955_25”)
 
 ####################################################################################################################
+
+DPCM
+
+G3JJ4E6T;RPS;;;;01013;0666498012;;;CRRRNT31S05A182C;F;;1;;;;2;;2019-06-06;A;;NO;208;;;;;;;;;010A24380836154;VNZNTN55B02F952P;038744138;RCD;;2;;;
+
+
+Oggetto RicettaMIR
+-> Oggetto Testata
+-> pinCode
+-> tipoInvio
+-> testata1
+-> testata2
+-> Oggetto Ricetta
+-> protocolloSAC
+-> bar1
+-> bar2
+-> altro
+-> noteInvio
+-> codAssistito
+-> tipoPrescrizione
+-> codEsenzione
+-> nonEsente
+-> reddito
+-> codDiagnosi
+-> descrDiagnosi
+-> totPezzi
+-> tipoRic
+-> dataCompilazione
+-> tipoVisita
+-> dispReg
+-> provAssistito
+-> aslAssistito
+-> indicazionePrescrizione
+-> classePriorita
+-> statoEstero
+-> istituzCompetente
+-> numIdentPers
+-> numIdentTess
+-> dataNascitaEstero
+-> dataScadTessera
+-> ricetta1
+-> ricetta2
+-> Lista di oggetti Prescrizione
+-> codProdPrest
+-> descrProdPrest
+-> notaProd
+-> quantita
+-> prescrizione1
+-> prescrizione2
