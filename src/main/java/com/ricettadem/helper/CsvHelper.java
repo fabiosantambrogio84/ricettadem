@@ -199,7 +199,7 @@ public class CsvHelper {
                     annullaRicetta = new AnnullaRicetta();
                     annullaRicetta.setPinCode(values.get(0));
                     annullaRicetta.setCodiceFiscale(values.get(1));
-                    annullaRicetta.setNumeroRicetta(values.get(2));
+                    annullaRicetta.setNre(values.get(2));
 
                     logger.info("Richiesta lotti nre successfully created: " + annullaRicetta.toString());
                 }

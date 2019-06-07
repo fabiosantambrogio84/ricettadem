@@ -1,6 +1,8 @@
 package com.ricettadem.main;
 
+import com.ricettadem.services.AnnullaRicettaService;
 import com.ricettadem.services.RicettaService;
+import com.ricettadem.services.RichiestaLottiNreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,11 @@ public class Application {
     @Autowired
     private RicettaService ricettaService;
 
+    @Autowired
+    private RichiestaLottiNreService richiestaLottiNreService;
+
+    @Autowired
+    private AnnullaRicettaService annullaRicettaService;
 
     public static void main(String[] args) throws Exception{
         logger.info("Application start");
@@ -27,7 +34,7 @@ public class Application {
         String arg1 = null;
         try{
             arg1 = args[0];
-                app.run(arg1);
+            app.run(arg1);
             if(arg1 == null){
                 throw new RuntimeException("Specify the type of application to run");
             }
@@ -44,7 +51,21 @@ public class Application {
             try {
                 ricettaService.invia();
             }catch(Exception e){
-                logger.error("Error during execution of 'INVIO-RICETTA'", e);
+                logger.error("Error during execution of 'invio-ricetta'", e);
+                throw e;
+            }
+        } else if(type.toLowerCase().equals("richiesta-lotti-nre")){
+            try{
+                richiestaLottiNreService.invia();
+            } catch(Exception e){
+                logger.error("Error during execution of 'richiesta-lotti-nre'", e);
+                throw e;
+            }
+        } else if(type.toLowerCase().equals("annulla-ricetta")){
+            try{
+                annullaRicettaService.invia();
+            } catch(Exception e){
+                logger.error("Error during execution of 'annulla-ricetta'", e);
                 throw e;
             }
         }
