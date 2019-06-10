@@ -91,6 +91,20 @@
                             </schemaIncludes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>dpcm-invio-ricetta</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatePackage>com.ricettadem.soap.dpcm.invioRicetta</generatePackage>
+                            <generateDirectory>${project.basedir}/src/main/java</generateDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/resources/wsdl/dpcmInvioRicetta</schemaDirectory>
+                            <schemaIncludes>
+                                <include>*.wsdl</include>
+                            </schemaIncludes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

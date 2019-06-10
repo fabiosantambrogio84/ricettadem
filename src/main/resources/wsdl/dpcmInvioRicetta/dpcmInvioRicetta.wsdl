@@ -1,0 +1,57 @@
+<wsdl:definitions xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="urn:attachment.ws.it" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="invioTelematicoSanitaService" targetNamespace="urn:attachment.ws.it">
+    <wsdl:types>
+        <xs:schema xmlns:tns="urn:attachment.ws.it" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:attachment.ws.it" version="1.0">
+            <xs:element name="ParametriInvio" type="tns:ParametriInvio"/>
+            <xs:element name="inputBean" type="tns:ParametriInvio"/>
+            <xs:element name="ricevuta" type="tns:RicevutaSAC"/>
+            <xs:element name="sac" type="tns:RicevutaSAC"/>
+            <xs:complexType name="ParametriInvio">
+                <xs:sequence>
+                    <xs:element name="nomeFileAllegato" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telematico1" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telematico2" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telematico3" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="RicevutaSAC">
+                <xs:sequence>
+                    <xs:element name="protocolloSAC" type="xs:string"/>
+                    <xs:element name="dataAccoglienza" type="xs:string"/>
+                    <xs:element name="nomeFileAllegato" type="xs:string"/>
+                    <xs:element name="dimensioneFileAllegato" type="xs:string"/>
+                    <xs:element name="codiceEsito" type="xs:string"/>
+                    <xs:element name="descrizioneEsito" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="inviaFileSanitaResponse">
+        <wsdl:part element="tns:ricevuta" name="rispostaBean"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="inviaFileSanita">
+        <wsdl:part element="tns:inputBean" name="body"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="InvioTelematicoSanita">
+        <wsdl:operation name="inviaFileSanita">
+            <wsdl:input message="tns:inviaFileSanita" name="inviaFileSanita"> </wsdl:input>
+            <wsdl:output message="tns:inviaFileSanitaResponse" name="inviaFileSanitaResponse"> </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="invioTelematicoSanitaServiceSoapBinding" type="tns:InvioTelematicoSanita">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="inviaFileSanita">
+            <soap:operation soapAction="invio" style="document"/>
+            <wsdl:input name="inviaFileSanita">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="inviaFileSanitaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="invioTelematicoSanitaService">
+        <wsdl:port binding="tns:invioTelematicoSanitaServiceSoapBinding" name="invioTelematicoSanita">
+            <soap:address location="https://svc-sanita-internet.reteunitaria.piemonte.it/REL/service/invioTelematicoSanita"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

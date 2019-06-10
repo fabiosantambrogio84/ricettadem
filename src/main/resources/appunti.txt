@@ -28,6 +28,38 @@ Ci deve essere, nella stessa directory, che è C:\WINDOC, anche il file SARuser.
 
 ####################################################################################################################
 
+
+/usr/lib/jvm/java-8-oracle/jre/bin
+
+
+keytool -importcert -keystore client-truststore.jks -alias ricetta-dem-key -file /home/developer/Desktop/fabio_temp/Antonio/REL_PROD_PUBKEY.cer -storepass fabio19121984
+
+keytool -importcert -keystore /home/developer/Desktop/fabio_temp/Antonio/Certificati/client-truststore.jks -alias actalis-ca-g3 -file /home/developer/Desktop/fabio_temp/Antonio/Certificati/Actalis_Server_Authentication_CAG3.crt -storepass fabio19121984
+
+keytool -importcert -keystore /home/developer/Desktop/fabio_temp/Antonio/Certificati/client-truststore.jks -alias actalis-ca-root -file /home/developer/Desktop/fabio_temp/Antonio/Certificati/Actalis_Server_Authentication_RootCA.crt -storepass fabio19121984
+
+
+keytool -importcert -keystore client-truststore.jks -alias ricetta-dpcm-dem-key -file /home/developer/Desktop/fabio_temp/Antonio/SanitelCF.cer -storepass fabio19121984
+
+
+keytool -list -v -keystore /home/developer/Desktop/fabio_temp/Antonio/Certificati/client-truststore.jks
+
+
+010A24369712031 fino a 010A24369712999
+
+
+java -Dspring.config.location=/home/developer/Desktop/fabio_temp/Antonio/config/ -jar ricetta-dem.jar invio-ricetta
+
+
+Codice Regione: 010
+Codice Raggruppamento Lotto: A2
+Identificativo Lotto: 4
+Codice Lotto: 369712
+Codice Esito Richiesta: 00
+Esito Richiesta: 00
+
+####################################################################################################################
+
 DPCM
 
 G3JJ4E6T;RPS;;;;01013;0666498012;;;CRRRNT31S05A182C;F;;1;;;;2;;2019-06-06;A;;NO;208;;;;;;;;;010A24380836154;VNZNTN55B02F952P;038744138;RCD;;2;;;
