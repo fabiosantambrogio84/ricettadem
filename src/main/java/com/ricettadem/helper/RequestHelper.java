@@ -119,6 +119,6 @@ public class RequestHelper {
 
     public void createDpcmInvioRicetta(RicettaMir ricettaMir) throws Exception{
         ParametriInvio request = new ParametriInvio();
-        request.
+        //request.
     }
 }

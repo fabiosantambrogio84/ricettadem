@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.saaj.SaajSoapMessage;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.BufferedWriter;
@@ -274,7 +278,12 @@ public class RicettaMirService {
 
         logger.info("Performing the soap request...");
         webServiceTemplate.setDefaultUri(uriInvioRicettaDpcm);
-        webServiceTemplate.sendSourceAndReceiveToResult()
+
+        SaajSoapMessageFactory saajSoapMessageFactory = new SaajSoapMessageFactory();
+//        DataHandler dataHandler = new DataHandler(new FileDataSource(("")));
+        SaajSoapMessage saajSoapMessage = saajSoapMessageFactory.createWebServiceMessage();
+        saajSoapMessage.addAttachment("", new File(""));
+
         //InvioPrescrittoRicevuta response = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 

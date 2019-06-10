@@ -11,14 +11,15 @@ import com.ricettadem.model.dpcm.Testata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CsvHelper {
 
@@ -34,10 +35,25 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if(Files.exists(path)) {
-            try(Stream<String> lines = Files.lines(path)){
-                allValues = lines
-                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
-                        .collect(Collectors.toList());
+//            try(Stream<String> lines = Files.lines(path)){
+//                allValues = lines
+//                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
+//                        .collect(Collectors.toList());
+//            }
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+
+                while ((line = br.readLine()) != null) {
+
+                    // use comma as separator
+                    String[] values = line.split(delimiter);
+
+                    allValues.add(Arrays.asList(values));
+                }
+
+            } catch (IOException e) {
+                logger.error("Error reading file", e);
+                throw e;
             }
         }
         if(!allValues.isEmpty()){
@@ -145,10 +161,20 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if (Files.exists(path)) {
-            try (Stream<String> lines = Files.lines(path)) {
-                allValues = lines
-                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
-                        .collect(Collectors.toList());
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+
+                while ((line = br.readLine()) != null) {
+
+                    // use comma as separator
+                    String[] values = line.split(delimiter);
+
+                    allValues.add(Arrays.asList(values));
+                }
+
+            } catch (IOException e) {
+                logger.error("Error reading file", e);
+                throw e;
             }
         }
         if (!allValues.isEmpty()) {
@@ -186,10 +212,20 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if (Files.exists(path)) {
-            try (Stream<String> lines = Files.lines(path)) {
-                allValues = lines
-                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
-                        .collect(Collectors.toList());
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+
+                while ((line = br.readLine()) != null) {
+
+                    // use comma as separator
+                    String[] values = line.split(delimiter);
+
+                    allValues.add(Arrays.asList(values));
+                }
+
+            } catch (IOException e) {
+                logger.error("Error reading file", e);
+                throw e;
             }
         }
         if (!allValues.isEmpty()) {
@@ -227,10 +263,20 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if(Files.exists(path)) {
-            try(Stream<String> lines = Files.lines(path)){
-                allValues = lines
-                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
-                        .collect(Collectors.toList());
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+
+                while ((line = br.readLine()) != null) {
+
+                    // use comma as separator
+                    String[] values = line.split(delimiter);
+
+                    allValues.add(Arrays.asList(values));
+                }
+
+            } catch (IOException e) {
+                logger.error("Error reading file", e);
+                throw e;
             }
         }
         if(!allValues.isEmpty()){

@@ -20,15 +20,13 @@ import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.net.ssl.SSLContext;
+import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Configuration
@@ -81,6 +79,8 @@ public class SoapClientConfiguration {
         // set the basic authorization credentials
 //        httpComponentsMessageSender.setCredentials(usernamePasswordCredentials());
         httpComponentsMessageSender.setHttpClient(httpClient());
+        httpComponentsMessageSender.setConnectionTimeout(60000);
+        httpComponentsMessageSender.setReadTimeout(60000);
 
         return httpComponentsMessageSender;
     }
@@ -126,20 +126,25 @@ public class SoapClientConfiguration {
 
         List<String> list = new ArrayList<>();
 
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(credentialsFilePath))) {
+        String line = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(credentialsFilePath))) {
 
-            //br returns as stream and convert it into a List
-            list = br.lines().collect(Collectors.toList());
+            while ((line = br.readLine()) != null) {
+                list.add(line);
+
+            }
 
         } catch (IOException e) {
-            logger.error("", e);
+            logger.error("Error reading file", e);
+            throw e;
         }
+
         String credentials = list.get(0);
         credentials = credentials.replace(";", ":");
 
         logger.info("Credentials retrieved: " + credentials);
 
-        base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes("utf-8"));
+        base64Credentials = DatatypeConverter.printBase64Binary(credentials.getBytes("utf-8"));
 
         return base64Credentials;
     }
