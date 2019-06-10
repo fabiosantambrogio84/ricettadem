@@ -4,6 +4,10 @@ import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
+import com.ricettadem.model.dpcm.Prescrizione;
+import com.ricettadem.model.dpcm.RicettaDpcm;
+import com.ricettadem.model.dpcm.RicettaMir;
+import com.ricettadem.model.dpcm.Testata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +123,7 @@ public class CsvHelper {
                     logger.info("End creating Dettagli Prescrizione");
 
                     ricetta.setDettagliPrescrizione(dettagliPrescrizione);
-                    logger.info("Ricetta successfully created: " + ricetta.toString());
+                    logger.info("RicettaDpcm successfully created: " + ricetta.toString());
                 }
             } else{
                 throw new RuntimeException("Il file in ingresso è vuoto");
@@ -211,5 +215,104 @@ public class CsvHelper {
         }
 
         return annullaRicetta;
+    }
+
+    public static RicettaMir readRicettaDpcmCsv(String filePath, String delimiter, Integer testataNumCampi, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi) throws Exception{
+        RicettaMir ricettaDpcm = null;
+
+        Path path = Paths.get(filePath);
+
+        logger.info("Processing file '" + filePath + "'");
+
+        List<List<String>> allValues = new ArrayList<>();
+
+        if(Files.exists(path)) {
+            try(Stream<String> lines = Files.lines(path)){
+                allValues = lines
+                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
+                        .collect(Collectors.toList());
+            }
+        }
+        if(!allValues.isEmpty()){
+            List<String> values = allValues.get(0);
+            if(!values.isEmpty()){
+                logger.info("The file contains " + values.size() + " elements");
+                if(values.size() < (testataNumCampi + ricettaNumCampi)){
+                    throw new RuntimeException("Il file in ingresso non contiene tutti i campi necessari per creare la ricetta DPCM");
+                } else{
+                    // Creo la ricetta MIR
+                    ricettaDpcm = new RicettaMir();
+
+                    // Creo la testata
+                    Testata testata = new Testata();
+                    testata.setPinCode(values.get(0));
+                    testata.setTipoInvio(values.get(1));
+                    testata.setTestata1(values.get(2));
+                    testata.setTestata2(values.get(3));
+
+                    // Creo la ricetta
+                    RicettaDpcm ricetta = new RicettaDpcm();
+                    ricetta.setProtocolloSAC(values.get(4));
+                    ricetta.setBar1(values.get(5));
+                    ricetta.setBar2(values.get(6));
+                    ricetta.setAltro(values.get(7));
+                    ricetta.setNoteInvio(values.get(8));
+                    ricetta.setCodAssistito(values.get(9));
+                    ricetta.setTipoPrescrizione(values.get(10));
+                    ricetta.setCodEsenzione(values.get(11));
+                    ricetta.setNonEsente(values.get(12));
+                    ricetta.setReddito(values.get(13));
+                    ricetta.setCodDiagnosi(values.get(14));
+                    ricetta.setDescrDiagnosi(values.get(15));
+                    ricetta.setTotPezzi(values.get(16));
+                    ricetta.setTipoRic(values.get(17));
+                    ricetta.setDataCompilazione(values.get(18));
+                    ricetta.setTipoVisita(values.get(19));
+                    ricetta.setDispReg(values.get(20));
+                    ricetta.setProvAssistito(values.get(21));
+                    ricetta.setAslAssistito(values.get(22));
+                    ricetta.setIndicazionePrescrizione(values.get(23));
+                    ricetta.setClassePriorita(values.get(24));
+                    ricetta.setStatoEstero(values.get(25));
+                    ricetta.setIstituzCompetente(values.get(26));
+                    ricetta.setNumIdentPers(values.get(27));
+                    ricetta.setNumIdentTess(values.get(28));
+                    ricetta.setDataNascitaEstero(values.get(29));
+                    ricetta.setDataScadTessera(values.get(30));
+                    ricetta.setRicetta1(values.get(31));
+                    ricetta.setRicetta2(values.get(32));
+
+                    logger.info("Start creating Prescrizioni...");
+
+                    List<Prescrizione> prescrizioni = new ArrayList<>();
+                    Integer startIndex = (testataNumCampi + ricettaNumCampi);
+
+                    while(startIndex < values.size()){
+                        Prescrizione prescrizione = new Prescrizione();
+                        for(int i=startIndex; i<(startIndex + ricettaPrescrizioneNumCampi + 1);i++){
+//                            logger.info("-> "+startIndex);
+                            prescrizione.setCodProdPrest(values.get(startIndex));
+                            prescrizione.setDescrProdPrest(values.get(startIndex + 1));
+                            prescrizione.setNotaProd(values.get(startIndex + 2));
+                            prescrizione.setQuantita(values.get(startIndex + 3));
+                            prescrizione.setPrescrizione1(values.get(startIndex + 4));
+                            prescrizione.setPrescrizione2(values.get(startIndex + 5));
+                        }
+                        prescrizioni.add(prescrizione);
+                        startIndex = startIndex + ricettaPrescrizioneNumCampi + 1;
+                    }
+                    logger.info("End creating Prescrizioni");
+
+                    ricettaDpcm.setPrescrizioni(prescrizioni);
+                    logger.info("Ricetta DPCM successfully created: " + ricetta.toString());
+                }
+            } else{
+                throw new RuntimeException("Il file in ingresso è vuoto");
+            }
+        } else{
+            throw new RuntimeException("Il file in ingresso è vuoto");
+        }
+
+        return ricettaDpcm;
     }
 }

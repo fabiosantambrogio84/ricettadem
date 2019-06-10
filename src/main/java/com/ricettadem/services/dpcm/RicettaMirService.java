@@ -1,8 +1,9 @@
-package com.ricettadem.services;
+package com.ricettadem.services.dpcm;
 
 import com.ricettadem.helper.CsvHelper;
 import com.ricettadem.helper.RequestHelper;
 import com.ricettadem.model.Ricetta;
+import com.ricettadem.model.dpcm.RicettaMir;
 import com.ricettadem.soap.invioPrescritto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,32 +18,41 @@ import java.io.FileWriter;
 import java.util.List;
 
 @Service
-public class RicettaService {
+public class RicettaMirService {
 
-    private static Logger logger = LoggerFactory.getLogger(RicettaService.class);
+    private static Logger logger = LoggerFactory.getLogger(RicettaMirService.class);
 
     private static final String ESITO_OK = "0000";
 
     @Value("${csv.delimiter}")
     private String delimiter;
 
-    @Value("${ricetta.num-campi}")
-    private Integer ricettaNumCampi;
+    @Value("${dpcm.ricetta.num-campi}")
+    private Integer ricettaDpcmNumCampi;
 
-    @Value("${ricetta.prescrizione-num-campi}")
-    private Integer ricettaPrescrizioneNumCampi;
+    @Value("${dpcm.ricetta.testata-num-campi}")
+    private Integer ricettaDpcmTestataNumCampi;
 
-    @Value("${ws.uri.invio-ricetta}")
-    private String uriInvioRicetta;
+    @Value("${dpcm.ricetta.prescrizione-num-campi}")
+    private Integer ricettaDpcmPrescrizioneNumCampi;
 
-    @Value("${ricetta.request.file-path}")
-    private String ricettaFilePath;
+    @Value("${ws.uri.dpcm.invio-ricetta}")
+    private String uriInvioRicettaDpcm;
 
-    @Value("${ricetta.response.ok.file-path}")
-    private String ricettaResponseFilePath;
+    @Value("${dpcm.ricetta.request.file-path}")
+    private String ricettaDpcmFilePath;
 
-    @Value("${ricetta.response.ko.file-path}")
-    private String ricettaErrorResponseFilePath;
+    @Value("${dpcm.ricetta.response.ok.file-path}")
+    private String ricettaDpcmResponseFilePath;
+
+    @Value("${dpcm.ricetta.response.ko.file-path}")
+    private String ricettaDpcmErrorResponseFilePath;
+
+    @Value("${dpcm.ricetta.tmp-folder-path}")
+    private String ricettaDpcmTmpFolderPath;
+
+    @Value("${dpcm.ricetta.tmp-folder-delete}")
+    private String ricettaDpcmDeleteTmpFolder;
 
     @Autowired
     private RequestHelper requestHelper;
@@ -50,24 +60,32 @@ public class RicettaService {
     @Autowired
     WebServiceTemplate webServiceTemplate;
 
-
     public void invia() throws Exception{
-        logger.info("INVIO RICETTA DEMATERIALIZZATA");
+        logger.info("INVIO RICETTA DPCM DEMATERIALIZZATA");
         logger.info("Parsing the file...");
-        Ricetta ricetta = CsvHelper.readRicettaCsv(ricettaFilePath, delimiter, ricettaNumCampi, ricettaPrescrizioneNumCampi);
-        logger.info("RicettaDpcm retrieved from file: " + ricetta.toString());
+        RicettaMir ricettaMir = CsvHelper.readRicettaDpcmCsv(ricettaDpcmFilePath, delimiter, ricettaDpcmTestataNumCampi, ricettaDpcmNumCampi, ricettaDpcmPrescrizioneNumCampi);
+        logger.info("Ricetta DPCM retrieved from file: " + ricettaMir.toString());
+
+        logger.info("Creating the xml file...");
+        // TODO: encrypt values
+        logger.info("File xml successfully created");
+
+        logger.info("Creating the zip file...");
+
+        logger.info("File zip successfully created");
 
         logger.info("Creating the soap request...");
-        InvioPrescrittoRichiesta request = requestHelper.createInvioPrescrittoRichiesta(ricetta);
+        //InvioPrescrittoRichiesta request = requestHelper.createInvioPrescrittoRichiesta(ricetta);
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");
-        webServiceTemplate.setDefaultUri(uriInvioRicetta);
-        InvioPrescrittoRicevuta response = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
+        //webServiceTemplate.setDefaultUri(uriInvioRicetta);
+        //InvioPrescrittoRicevuta response = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 
         logger.info("Creating the response file...");
 
+        /*
         String nreOutput = "NRE: " + response.getNre();
         String codiceAutenticazioneOutput = "Codice Autenticazione: " + response.getCodAutenticazione();
         String dataInserimentoOutput = "Data Inserimento: " + response.getDataInserimento();
@@ -159,7 +177,7 @@ public class RicettaService {
         } finally{
             bw.close();
         }
-
+        */
         logger.info("Response file successfully created");
     }
 }
