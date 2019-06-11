@@ -46,7 +46,7 @@ public class CsvHelper {
                 while ((line = br.readLine()) != null) {
 
                     // use comma as separator
-                    String[] values = line.split(delimiter);
+                    String[] values = line.split(delimiter, -1);
 
                     allValues.add(Arrays.asList(values));
                 }
@@ -56,8 +56,15 @@ public class CsvHelper {
                 throw e;
             }
         }
+        List<String> values = allValues.get(0);
+        for(String v:values){
+            System.out.println("-> "+v);
+        }
         if(!allValues.isEmpty()){
-            List<String> values = allValues.get(0);
+//            List<String> values = allValues.get(0);
+//            for(String v:values){
+//                System.out.println("-> "+v);
+//            }
             if(!values.isEmpty()){
                 logger.info("The file contains " + values.size() + " elements");
                 if(values.size() < ricettaNumCampi){

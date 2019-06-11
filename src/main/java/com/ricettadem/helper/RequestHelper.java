@@ -6,7 +6,7 @@ import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
 import com.ricettadem.model.dpcm.RicettaMir;
 import com.ricettadem.soap.annullaPrescritto.AnnullaPrescrittoRichiesta;
-import com.ricettadem.soap.dpcm.invioRicetta.ParametriInvio;
+
 import com.ricettadem.soap.invioPrescritto.DettaglioPrescrizioneType;
 import com.ricettadem.soap.invioPrescritto.ElencoDettagliPrescrizioniType;
 import com.ricettadem.soap.invioPrescritto.InvioPrescrittoRichiesta;
@@ -118,7 +118,7 @@ public class RequestHelper {
     }
 
     public void createDpcmInvioRicetta(RicettaMir ricettaMir) throws Exception{
-        ParametriInvio request = new ParametriInvio();
+//        ParametriInvio request = new ParametriInvio();
         //request.
     }
 }

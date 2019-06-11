@@ -52,7 +52,11 @@ public class SoapClientConfiguration {
     @Bean
     Jaxb2Marshaller jaxb2Marshaller() {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-        jaxb2Marshaller.setContextPath("com.ricettadem.soap");
+        jaxb2Marshaller.setContextPaths("com.ricettadem.soap.invioPrescritto",
+                "com.ricettadem.soap.annullaPrescritto",
+                "com.ricettadem.soap.richiestaLottiNre");
+
+//        setContextPath("com.ricettadem.soap");
 
         return jaxb2Marshaller;
     }
@@ -78,9 +82,9 @@ public class SoapClientConfiguration {
         HttpComponentsMessageSender httpComponentsMessageSender = new HttpComponentsMessageSender();
         // set the basic authorization credentials
 //        httpComponentsMessageSender.setCredentials(usernamePasswordCredentials());
-        httpComponentsMessageSender.setHttpClient(httpClient());
         httpComponentsMessageSender.setConnectionTimeout(60000);
         httpComponentsMessageSender.setReadTimeout(60000);
+        httpComponentsMessageSender.setHttpClient(httpClient());
 
         return httpComponentsMessageSender;
     }
