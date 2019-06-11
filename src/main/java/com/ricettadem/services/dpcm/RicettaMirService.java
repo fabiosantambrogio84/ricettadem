@@ -284,6 +284,17 @@ public class RicettaMirService {
 
         logger.info("Creating the zip file...");
         // todo: creazione zip
+//        File f = new File("d:\\test.zip");
+//        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(f));
+//        ZipEntry e = new ZipEntry("mytext.txt");
+//        out.putNextEntry(e);
+//
+//        byte[] data = sb.toString().getBytes();
+//        out.write(data, 0, data.length);
+//        out.closeEntry();
+//
+//        out.close();
+
         logger.info("File zip successfully created");
 
         logger.info("Creating the soap request...");
