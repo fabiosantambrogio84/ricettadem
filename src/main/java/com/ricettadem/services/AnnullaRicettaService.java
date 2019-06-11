@@ -1,7 +1,7 @@
 package com.ricettadem.services;
 
 import com.ricettadem.helper.CsvHelper;
-import com.ricettadem.helper.RequestHelper;
+import com.ricettadem.components.SOAPSpringClientComponent;
 import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.soap.annullaPrescritto.*;
 
@@ -43,7 +43,7 @@ public class AnnullaRicettaService {
     private String annullaRicettaErrorResponseFilePath;
 
     @Autowired
-    private RequestHelper requestHelper;
+    private SOAPSpringClientComponent soapSpringClientComponent;
 
     @Autowired
     WebServiceTemplate webServiceTemplate;
@@ -56,7 +56,7 @@ public class AnnullaRicettaService {
         logger.info("Richiesta lotti nre retrieved from file: " + annullaRicetta.toString());
 
         logger.info("Creating the soap request...");
-        AnnullaPrescrittoRichiesta request = requestHelper.createAnnullaRicettaRichiesta(annullaRicetta);
+        AnnullaPrescrittoRichiesta request = soapSpringClientComponent.createAnnullaRicettaRichiesta(annullaRicetta);
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");

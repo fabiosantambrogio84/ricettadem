@@ -1,5 +1,6 @@
-package com.ricettadem.helper;
+package com.ricettadem.components;
 
+import com.ricettadem.helper.EncryptDecryptHelper;
 import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
@@ -19,9 +20,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class RequestHelper {
+public class SOAPSpringClientComponent {
 
-    private static Logger logger = LoggerFactory.getLogger(RequestHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(SOAPSpringClientComponent.class);
 
     @Value("${certificate.file-path}")
     private String certificateFilePath;

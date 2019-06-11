@@ -1,7 +1,7 @@
 package com.ricettadem.services;
 
 import com.ricettadem.helper.CsvHelper;
-import com.ricettadem.helper.RequestHelper;
+import com.ricettadem.components.SOAPSpringClientComponent;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.soap.invioPrescritto.*;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class RicettaService {
     private String ricettaErrorResponseFilePath;
 
     @Autowired
-    private RequestHelper requestHelper;
+    private SOAPSpringClientComponent soapSpringClientComponent;
 
     @Autowired
     WebServiceTemplate webServiceTemplate;
@@ -58,7 +58,7 @@ public class RicettaService {
         logger.info("RicettaDpcm retrieved from file: " + ricetta.toString());
 
         logger.info("Creating the soap request...");
-        InvioPrescrittoRichiesta request = requestHelper.createInvioPrescrittoRichiesta(ricetta);
+        InvioPrescrittoRichiesta request = soapSpringClientComponent.createInvioPrescrittoRichiesta(ricetta);
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");

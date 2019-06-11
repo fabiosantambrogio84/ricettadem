@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
+import javax.xml.bind.DatatypeConverter;
 import java.io.FileInputStream;
 import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -33,7 +33,7 @@ public class EncryptDecryptHelper {
 
             byte[] cipherText = encryptCipher.doFinal(plainText.getBytes(UTF_8));
 
-            result = Base64.getEncoder().encodeToString(cipherText);
+            result = DatatypeConverter.printBase64Binary(cipherText);
         } catch(Exception e){
             logger.error("Error encrypting the string '"+plainText+"'",e);
             throw e;

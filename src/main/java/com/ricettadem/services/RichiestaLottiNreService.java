@@ -1,7 +1,7 @@
 package com.ricettadem.services;
 
 import com.ricettadem.helper.CsvHelper;
-import com.ricettadem.helper.RequestHelper;
+import com.ricettadem.components.SOAPSpringClientComponent;
 import com.ricettadem.model.RichiestaLottiNre;
 import com.ricettadem.soap.richiestaLottiNre.LottoRicevutaNRE;
 import com.ricettadem.soap.richiestaLottiNre.LottoRichiestaNRE;
@@ -42,7 +42,7 @@ public class RichiestaLottiNreService {
     private String richiestaLottiNreErrorResponseFilePath;
 
     @Autowired
-    private RequestHelper requestHelper;
+    private SOAPSpringClientComponent soapSpringClientComponent;
 
     @Autowired
     WebServiceTemplate webServiceTemplate;
@@ -55,7 +55,7 @@ public class RichiestaLottiNreService {
         logger.info("Richiesta lotti nre retrieved from file: " + richiestaLottiNre.toString());
 
         logger.info("Creating the soap request...");
-        LottoRichiestaNRE request = requestHelper.createRichiestaLottiNreRichiesta(richiestaLottiNre);
+        LottoRichiestaNRE request = soapSpringClientComponent.createRichiestaLottiNreRichiesta(richiestaLottiNre);
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");

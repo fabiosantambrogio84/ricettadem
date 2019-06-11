@@ -1,13 +1,11 @@
 package com.ricettadem.services.dpcm;
 
+import com.ricettadem.components.SOAPSpringClientComponent;
 import com.ricettadem.helper.CsvHelper;
 import com.ricettadem.helper.EncryptDecryptHelper;
-import com.ricettadem.helper.RequestHelper;
-import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.dpcm.Prescrizione;
 import com.ricettadem.model.dpcm.RicettaDpcm;
 import com.ricettadem.model.dpcm.RicettaMir;
-import com.ricettadem.soap.invioPrescritto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +15,14 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.StringWriter;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
 import java.util.List;
 
 @Service
@@ -68,7 +66,7 @@ public class RicettaMirService {
     private String dpcmCertificateFilePath;
 
     @Autowired
-    private RequestHelper requestHelper;
+    private SOAPSpringClientComponent SOAPSpringClientComponent;
 
     @Autowired
     WebServiceTemplate webServiceTemplate;
@@ -264,8 +262,24 @@ public class RicettaMirService {
         // chiusura 'RicetteMIR'
         xmlStreamWriter.writeEndElement();
 
-        // todo: creazione file
+        xmlStreamWriter.flush();
+        xmlStreamWriter.close();
 
+        String xmlString = stringWriter.getBuffer().toString();
+        stringWriter.close();
+
+        xmlString = transformToPrettyPrint(xmlString);
+        //System.out.println(transformToPrettyPrint(xmlString));
+
+        String fileName = System.currentTimeMillis() + "_Venza_Windoc";
+        String filePath = ricettaDpcmTmpFolderPath + "/" + fileName + ".xml";
+
+        File f = new File(filePath);
+        f.setReadable(true, false);
+        f.setWritable(true, false);
+        try (PrintWriter out = new PrintWriter(f)) {
+            out.println(xmlString);
+        }
         logger.info("File xml successfully created");
 
         logger.info("Creating the zip file...");
@@ -273,7 +287,7 @@ public class RicettaMirService {
         logger.info("File zip successfully created");
 
         logger.info("Creating the soap request...");
-        //InvioPrescrittoRichiesta request = requestHelper.createInvioPrescrittoRichiesta(ricetta);
+        //InvioPrescrittoRichiesta request = SOAPSpringClientComponent.createInvioPrescrittoRichiesta(ricetta);
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");
@@ -384,4 +398,14 @@ public class RicettaMirService {
         */
         logger.info("Response file successfully created");
     }
+
+    private String transformToPrettyPrint(String xml) throws Exception{
+        Transformer t = TransformerFactory.newInstance().newTransformer();
+        t.setOutputProperty(OutputKeys.INDENT, "yes");
+        t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        Writer out = new StringWriter();
+        t.transform(new StreamSource(new StringReader(xml)), new StreamResult(out));
+        return out.toString();
+    }
+
 }
