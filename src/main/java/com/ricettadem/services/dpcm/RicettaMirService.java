@@ -1,6 +1,6 @@
 package com.ricettadem.services.dpcm;
 
-import com.ricettadem.components.SOAPSpringClientComponent;
+import com.ricettadem.components.SOAPClientComponent;
 import com.ricettadem.helper.CsvHelper;
 import com.ricettadem.helper.EncryptDecryptHelper;
 import com.ricettadem.model.dpcm.Prescrizione;
@@ -11,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.soap.saaj.SaajSoapMessage;
-import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
@@ -68,10 +65,8 @@ public class RicettaMirService {
     private String dpcmCertificateFilePath;
 
     @Autowired
-    private SOAPSpringClientComponent SOAPSpringClientComponent;
+    private SOAPClientComponent soapClientComponent;
 
-    @Autowired
-    WebServiceTemplate webServiceTemplate;
 
     public void invia() throws Exception{
         logger.info("INVIO RICETTA DPCM DEMATERIALIZZATA");
@@ -277,17 +272,34 @@ public class RicettaMirService {
         String xmlFilePath = ricettaDpcmTmpFolderPath + "/" + fileName + ".xml";
 
         File xmlFile = new File(xmlFilePath);
+        if(xmlFile.exists()){
+            try{
+                xmlFile.delete();
+            } catch(Exception e){
+                logger.info("Unable to delete the file '" + xmlFilePath + "'");
+            }
+        }
         try (PrintWriter out = new PrintWriter(xmlFile)) {
             out.println(xmlString);
         }
         logger.info("File xml successfully created");
 
         logger.info("Creating the zip file...");
+        String zipFilePath = ricettaDpcmTmpFolderPath + "/" + fileName + ".zip";
+        File zipFile = new File(zipFilePath);
+        if(zipFile.exists()){
+            try{
+                zipFile.delete();
+            } catch(Exception e){
+                logger.info("Unable to delete the file '" + zipFilePath + "'");
+            }
+        }
+
         FileOutputStream fos = null;
         FileInputStream fis = null;
         ZipOutputStream zipOut = null;
         try{
-            fos = new FileOutputStream(ricettaDpcmTmpFolderPath + "/" + fileName + ".zip");
+            fos = new FileOutputStream(zipFilePath);
             zipOut = new ZipOutputStream(fos);
             File fileToZip = new File(xmlFilePath);
             fis = new FileInputStream(fileToZip);
@@ -315,19 +327,10 @@ public class RicettaMirService {
         }
         logger.info("File zip successfully created");
 
-        logger.info("Creating the soap request...");
-        //InvioPrescrittoRichiesta request = SOAPSpringClientComponent.createInvioPrescrittoRichiesta(ricetta);
-        logger.info("Soap request successfully created");
-
         logger.info("Performing the soap request...");
-        webServiceTemplate.setDefaultUri(uriInvioRicettaDpcm);
 
-        SaajSoapMessageFactory saajSoapMessageFactory = new SaajSoapMessageFactory();
-//        DataHandler dataHandler = new DataHandler(new FileDataSource(("")));
-        SaajSoapMessage saajSoapMessage = saajSoapMessageFactory.createWebServiceMessage();
-        saajSoapMessage.addAttachment("", new File(""));
+        soapClientComponent.sendInvioRicettaDpcm(fileName + ".zip", new File(zipFilePath));
 
-        //InvioPrescrittoRicevuta response = (InvioPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 
         logger.info("Creating the response file...");

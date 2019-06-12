@@ -49,25 +49,85 @@ public class SoapClientConfiguration {
     @Value("${ws.ssl.truststore-password}")
     private String trustStorePassword;
 
+//    @Bean
+//    Jaxb2Marshaller jaxb2Marshaller() {
+//        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+//        jaxb2Marshaller.setContextPaths("com.ricettadem.soap.invioPrescritto",
+//                "com.ricettadem.soap.annullaPrescritto",
+//                "com.ricettadem.soap.richiestaLottiNre");
+//
+////        setContextPath("com.ricettadem.soap");
+//        return jaxb2Marshaller;
+//    }
+
     @Bean
-    Jaxb2Marshaller jaxb2Marshaller() {
+    Jaxb2Marshaller jaxb2MarshallerInvioPrescritto() {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-        jaxb2Marshaller.setContextPaths("com.ricettadem.soap.invioPrescritto",
-                "com.ricettadem.soap.annullaPrescritto",
-                "com.ricettadem.soap.richiestaLottiNre");
-
-//        setContextPath("com.ricettadem.soap");
-
+        jaxb2Marshaller.setContextPath("com.ricettadem.soap.invioPrescritto");
         return jaxb2Marshaller;
     }
 
     @Bean
-    public WebServiceTemplate webServiceTemplate() throws Exception {
+    Jaxb2Marshaller jaxb2MarshallerAnnullaPrescritto() {
+        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+        jaxb2Marshaller.setContextPath("com.ricettadem.soap.annullaPrescritto");
+        return jaxb2Marshaller;
+    }
+
+    @Bean
+    Jaxb2Marshaller jaxb2MarshallerRichiestaLottiNre() {
+        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+        jaxb2Marshaller.setContextPath("com.ricettadem.soap.richiestaLottiNre");
+        return jaxb2Marshaller;
+    }
+
+//    @Bean
+//    public WebServiceTemplate webServiceTemplate() throws Exception {
+//        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
+//        webServiceTemplate.setMarshaller(jaxb2Marshaller());
+//        webServiceTemplate.setUnmarshaller(jaxb2Marshaller());
+//        ClientInterceptor[] interceptors =
+//                new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
+//        webServiceTemplate.setInterceptors(interceptors);
+//
+//        // set a HttpComponentsMessageSender which provides support for basic authentication
+//        webServiceTemplate.setMessageSender(httpComponentsMessageSender());
+//        return webServiceTemplate;
+//    }
+
+    @Bean
+    public WebServiceTemplate webServiceTemplateInvioPrescritto() throws Exception {
         WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
-        webServiceTemplate.setMarshaller(jaxb2Marshaller());
-        webServiceTemplate.setUnmarshaller(jaxb2Marshaller());
-//        webServiceTemplate.setDefaultUri(defaultUri);
-        // register the LogHttpHeaderClientInterceptor
+        webServiceTemplate.setMarshaller(jaxb2MarshallerInvioPrescritto());
+        webServiceTemplate.setUnmarshaller(jaxb2MarshallerInvioPrescritto());
+        ClientInterceptor[] interceptors =
+                new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
+        webServiceTemplate.setInterceptors(interceptors);
+
+        // set a HttpComponentsMessageSender which provides support for basic authentication
+        webServiceTemplate.setMessageSender(httpComponentsMessageSender());
+        return webServiceTemplate;
+    }
+
+    @Bean
+    public WebServiceTemplate webServiceTemplateAnnullaPrescritto() throws Exception {
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
+        webServiceTemplate.setMarshaller(jaxb2MarshallerAnnullaPrescritto());
+        webServiceTemplate.setUnmarshaller(jaxb2MarshallerAnnullaPrescritto());
+        ClientInterceptor[] interceptors =
+                new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
+        webServiceTemplate.setInterceptors(interceptors);
+
+        // set a HttpComponentsMessageSender which provides support for basic authentication
+        webServiceTemplate.setMessageSender(httpComponentsMessageSender());
+        return webServiceTemplate;
+    }
+
+    @Bean
+    public WebServiceTemplate webServiceTemplateRichiestaLottiNre() throws Exception {
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
+        webServiceTemplate.setMarshaller(jaxb2MarshallerRichiestaLottiNre());
+        webServiceTemplate.setUnmarshaller(jaxb2MarshallerRichiestaLottiNre());
         ClientInterceptor[] interceptors =
                 new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
         webServiceTemplate.setInterceptors(interceptors);

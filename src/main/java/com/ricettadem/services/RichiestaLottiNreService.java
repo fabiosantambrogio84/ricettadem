@@ -45,7 +45,7 @@ public class RichiestaLottiNreService {
     private SOAPSpringClientComponent soapSpringClientComponent;
 
     @Autowired
-    WebServiceTemplate webServiceTemplate;
+    WebServiceTemplate webServiceTemplateRichiestaLottiNre;
 
 
     public void invia() throws Exception{
@@ -59,8 +59,8 @@ public class RichiestaLottiNreService {
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");
-        webServiceTemplate.setDefaultUri(uriRichiestaLottiNre);
-        LottoRicevutaNRE response = (LottoRicevutaNRE)webServiceTemplate.marshalSendAndReceive(request);
+        webServiceTemplateRichiestaLottiNre.setDefaultUri(uriRichiestaLottiNre);
+        LottoRicevutaNRE response = (LottoRicevutaNRE)webServiceTemplateRichiestaLottiNre.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 
         logger.info("Creating the response file...");

@@ -46,7 +46,7 @@ public class AnnullaRicettaService {
     private SOAPSpringClientComponent soapSpringClientComponent;
 
     @Autowired
-    WebServiceTemplate webServiceTemplate;
+    WebServiceTemplate webServiceTemplateAnnullaPrescritto;
 
 
     public void invia() throws Exception{
@@ -60,8 +60,8 @@ public class AnnullaRicettaService {
         logger.info("Soap request successfully created");
 
         logger.info("Performing the soap request...");
-        webServiceTemplate.setDefaultUri(uriAnnullaRicetta);
-        AnnullaPrescrittoRicevuta response = (AnnullaPrescrittoRicevuta)webServiceTemplate.marshalSendAndReceive(request);
+        webServiceTemplateAnnullaPrescritto.setDefaultUri(uriAnnullaRicetta);
+        AnnullaPrescrittoRicevuta response = (AnnullaPrescrittoRicevuta)webServiceTemplateAnnullaPrescritto.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 
         logger.info("Creating the response file...");

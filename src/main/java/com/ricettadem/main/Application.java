@@ -43,7 +43,7 @@ public class Application {
                 throw new RuntimeException("Specify the type of application to run");
             }
         } catch(Exception e){
-            logger.error("No argument was specified. Unable to run the application.");
+            //logger.error("No argument was specified. Unable to run the application.");
             throw e;
         }
 

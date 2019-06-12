@@ -276,7 +276,7 @@ public class CsvHelper {
                 while ((line = br.readLine()) != null) {
 
                     // use comma as separator
-                    String[] values = line.split(delimiter);
+                    String[] values = line.split(delimiter, -1);
 
                     allValues.add(Arrays.asList(values));
                 }
@@ -302,6 +302,7 @@ public class CsvHelper {
                     testata.setTipoInvio(values.get(1));
                     testata.setTestata1(values.get(2));
                     testata.setTestata2(values.get(3));
+                    ricettaDpcm.setTestata(testata);
 
                     // Creo la ricetta
                     RicettaDpcm ricetta = new RicettaDpcm();
@@ -334,6 +335,7 @@ public class CsvHelper {
                     ricetta.setDataScadTessera(values.get(30));
                     ricetta.setRicetta1(values.get(31));
                     ricetta.setRicetta2(values.get(32));
+                    ricettaDpcm.setRicetta(ricetta);
 
                     logger.info("Start creating Prescrizioni...");
 
