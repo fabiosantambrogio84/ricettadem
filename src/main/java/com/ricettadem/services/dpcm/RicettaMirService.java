@@ -24,6 +24,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class RicettaMirService {
@@ -272,29 +274,45 @@ public class RicettaMirService {
         //System.out.println(transformToPrettyPrint(xmlString));
 
         String fileName = System.currentTimeMillis() + "_Venza_Windoc";
-        String filePath = ricettaDpcmTmpFolderPath + "/" + fileName + ".xml";
+        String xmlFilePath = ricettaDpcmTmpFolderPath + "/" + fileName + ".xml";
 
-        File f = new File(filePath);
-        f.setReadable(true, false);
-        f.setWritable(true, false);
-        try (PrintWriter out = new PrintWriter(f)) {
+        File xmlFile = new File(xmlFilePath);
+        try (PrintWriter out = new PrintWriter(xmlFile)) {
             out.println(xmlString);
         }
         logger.info("File xml successfully created");
 
         logger.info("Creating the zip file...");
-        // todo: creazione zip
-//        File f = new File("d:\\test.zip");
-//        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(f));
-//        ZipEntry e = new ZipEntry("mytext.txt");
-//        out.putNextEntry(e);
-//
-//        byte[] data = sb.toString().getBytes();
-//        out.write(data, 0, data.length);
-//        out.closeEntry();
-//
-//        out.close();
+        FileOutputStream fos = null;
+        FileInputStream fis = null;
+        ZipOutputStream zipOut = null;
+        try{
+            fos = new FileOutputStream(ricettaDpcmTmpFolderPath + "/" + fileName + ".zip");
+            zipOut = new ZipOutputStream(fos);
+            File fileToZip = new File(xmlFilePath);
+            fis = new FileInputStream(fileToZip);
+            ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+            zipOut.putNextEntry(zipEntry);
+            byte[] bytes = new byte[1024];
+            int length;
+            while((length = fis.read(bytes)) >= 0) {
+                zipOut.write(bytes, 0, length);
+            }
 
+        } catch(Exception e){
+            logger.error("Error creating the zip file", e);
+            throw e;
+        } finally{
+            if(zipOut != null){
+                zipOut.close();
+            }
+            if(fis != null){
+                fis.close();
+            }
+            if(fos != null){
+                fos.close();
+            }
+        }
         logger.info("File zip successfully created");
 
         logger.info("Creating the soap request...");

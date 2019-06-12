@@ -3,6 +3,7 @@ package com.ricettadem.main;
 import com.ricettadem.services.AnnullaRicettaService;
 import com.ricettadem.services.RicettaService;
 import com.ricettadem.services.RichiestaLottiNreService;
+import com.ricettadem.services.dpcm.RicettaMirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class Application {
 
     @Autowired
     private AnnullaRicettaService annullaRicettaService;
+
+    @Autowired
+    private RicettaMirService ricettaMirService;
 
     public static void main(String[] args) throws Exception{
         logger.info("Application start");
@@ -66,6 +70,13 @@ public class Application {
                 annullaRicettaService.invia();
             } catch(Exception e){
                 logger.error("Error during execution of 'annulla-ricetta'", e);
+                throw e;
+            }
+        } else if(type.toLowerCase().equals("invio-ricetta-dpcm")){
+            try{
+                ricettaMirService.invia();
+            } catch(Exception e){
+                logger.error("Error during execution of 'invio-ricetta-dpcm'", e);
                 throw e;
             }
         }
