@@ -53,7 +53,7 @@ public class RicettaService {
     WebServiceTemplate webServiceTemplateInvioPrescritto;
 
 
-    public void invia() throws Exception{
+    public void invia(String optionalRegion) throws Exception{
         logger.info("INVIO RICETTA DEMATERIALIZZATA");
         logger.info("Parsing the file...");
         Ricetta ricetta = CsvHelper.readRicettaCsv(ricettaFilePath, delimiter, ricettaNumCampi, ricettaPrescrizioneNumCampi);

@@ -2,6 +2,7 @@ package com.ricettadem.components;
 
 import com.ricettadem.core.BinaryDataSource;
 import com.ricettadem.helper.AuthorizationHelper;
+import com.ricettadem.model.dpcm.RicettaDpcmInvioResponse;
 import com.ricettadem.services.dpcm.RicettaMirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Iterator;
 
 @Component
 public class SOAPClientComponent {
@@ -34,7 +36,9 @@ public class SOAPClientComponent {
     @Value("${dpcm.ricetta.response.ko.file-path}")
     private String ricettaErrorResponseFilePath;
 
-    public void sendInvioRicettaDpcm(String fileName, File file) throws Exception{
+    public RicettaDpcmInvioResponse sendInvioRicettaDpcm(String fileName, File file) throws Exception{
+
+        RicettaDpcmInvioResponse ricettaDpcmInvioResponse = null;
 
         SOAPConnectionFactory factory = SOAPConnectionFactory.newInstance();
 
@@ -84,8 +88,44 @@ public class SOAPClientComponent {
 
         logger.info("Sending the soap message...");
         SOAPMessage response = soapConnection.call(soapMessage, uriInvioRicettaDpcm);
+        if(response != null){
+            ricettaDpcmInvioResponse = new RicettaDpcmInvioResponse();
+
+            SOAPBody responseBody = response.getSOAPBody();
+            SOAPElement ricevutaElem = (SOAPElement)responseBody.getFirstChild();
+            Iterator<SOAPElement> childElements = ricevutaElem.getChildElements();
+            while(childElements.hasNext()){
+                SOAPElement element = childElements.next();
+                String localName = element.getElementName().getLocalName();
+                switch (localName) {
+                    case "protocolloSAC":
+                        ricettaDpcmInvioResponse.setProtocolloSAC(element.getValue());
+                        break;
+                    case "dataAccoglienza":
+                        ricettaDpcmInvioResponse.setDataAccoglienza(element.getValue());
+                        break;
+                    case "nomeFileAllegato":
+                        ricettaDpcmInvioResponse.setNomeFileAllegato(element.getValue());
+                        break;
+                    case "dimensioneFileAllegato":
+                        ricettaDpcmInvioResponse.setDimensioneFileAllegato(element.getValue());
+                        break;
+                    case "codiceEsito":
+                        ricettaDpcmInvioResponse.setCodiceEsito(element.getValue());
+                        break;
+                    default:
+                        ricettaDpcmInvioResponse.setDescrizioneEsito(element.getValue());
+                }
+
+            }
+        }
         logger.info("Soap message successfully sent");
 
+        if(ricettaDpcmInvioResponse != null){
+            logger.info("Response is: " + ricettaDpcmInvioResponse.toString());
+        }
+
+        return ricettaDpcmInvioResponse;
     }
 
     private String getPrintableSoapMessage(SOAPMessage soapMessage){

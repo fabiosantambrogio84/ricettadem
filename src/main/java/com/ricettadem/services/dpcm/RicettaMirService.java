@@ -5,6 +5,7 @@ import com.ricettadem.helper.CsvHelper;
 import com.ricettadem.helper.EncryptDecryptHelper;
 import com.ricettadem.model.dpcm.Prescrizione;
 import com.ricettadem.model.dpcm.RicettaDpcm;
+import com.ricettadem.model.dpcm.RicettaDpcmInvioResponse;
 import com.ricettadem.model.dpcm.RicettaMir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -311,6 +312,15 @@ public class RicettaMirService {
                 zipOut.write(bytes, 0, length);
             }
 
+            // cancello il file xml
+            if(xmlFile.exists()){
+                try{
+                    xmlFile.delete();
+                } catch(Exception e){
+                    logger.info("Unable to delete the file '" + xmlFilePath + "'");
+                }
+            }
+
         } catch(Exception e){
             logger.error("Error creating the zip file", e);
             throw e;
@@ -328,10 +338,17 @@ public class RicettaMirService {
         logger.info("File zip successfully created");
 
         logger.info("Performing the soap request...");
-
-        soapClientComponent.sendInvioRicettaDpcm(fileName + ".zip", new File(zipFilePath));
-
+        RicettaDpcmInvioResponse ricettaDpcmInvioResponse = soapClientComponent.sendInvioRicettaDpcm(fileName + ".zip", new File(zipFilePath));
         logger.info("Soap request successfully performed");
+
+        // cancello il file zip
+        if(zipFile.exists()){
+            try{
+                zipFile.delete();
+            } catch(Exception e){
+                logger.info("Unable to delete the file '" + xmlFilePath + "'");
+            }
+        }
 
         logger.info("Creating the response file...");
 

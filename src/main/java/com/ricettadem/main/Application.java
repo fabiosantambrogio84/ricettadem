@@ -36,12 +36,16 @@ public class Application {
         logger.info("Application running");
 
         String arg1 = null;
+        String arg2 = null;
         try{
             arg1 = args[0];
-            app.run(arg1);
             if(arg1 == null){
                 throw new RuntimeException("Specify the type of application to run");
             }
+            if(args.length > 1){
+                arg2 = args[1];
+            }
+            app.run(arg1, arg2);
         } catch(Exception e){
             //logger.error("No argument was specified. Unable to run the application.");
             throw e;
@@ -50,10 +54,13 @@ public class Application {
         logger.info("Application closed");
     }
 
-    private void run(String type) throws Exception{
+    private void run(String type, String optionalRegion) throws Exception{
+        if(optionalRegion != null && !optionalRegion.equals("")){
+            logger.info("Executing program for region '" + optionalRegion + "'");
+        }
         if(type.toLowerCase().equals("invio-ricetta")){
             try {
-                ricettaService.invia();
+                ricettaService.invia(optionalRegion);
             }catch(Exception e){
                 logger.error("Error during execution of 'invio-ricetta'", e);
                 throw e;
