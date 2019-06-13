@@ -30,7 +30,7 @@ public class RicettaMirService {
 
     private static Logger logger = LoggerFactory.getLogger(RicettaMirService.class);
 
-    private static final String ESITO_OK = "0000";
+    private static final String ESITO_OK = "000";
 
     @Value("${csv.delimiter}")
     private String delimiter;
@@ -50,11 +50,8 @@ public class RicettaMirService {
     @Value("${dpcm.ricetta.request.file-path}")
     private String ricettaDpcmFilePath;
 
-    @Value("${dpcm.ricetta.response.ok.file-path}")
+    @Value("${dpcm.ricetta.response.file-path}")
     private String ricettaDpcmResponseFilePath;
-
-    @Value("${dpcm.ricetta.response.ko.file-path}")
-    private String ricettaDpcmErrorResponseFilePath;
 
     @Value("${dpcm.ricetta.tmp-folder-path}")
     private String ricettaDpcmTmpFolderPath;
@@ -295,7 +292,6 @@ public class RicettaMirService {
                 logger.info("Unable to delete the file '" + zipFilePath + "'");
             }
         }
-
         FileOutputStream fos = null;
         FileInputStream fis = null;
         ZipOutputStream zipOut = null;
@@ -342,100 +338,44 @@ public class RicettaMirService {
         logger.info("Soap request successfully performed");
 
         // cancello il file zip
-        if(zipFile.exists()){
-            try{
-                zipFile.delete();
-            } catch(Exception e){
-                logger.info("Unable to delete the file '" + xmlFilePath + "'");
+        if(ricettaDpcmDeleteTmpFolder.equalsIgnoreCase("true")){
+            if(zipFile.exists()){
+                try{
+                    zipFile.delete();
+                } catch(Exception e){
+                    logger.info("Unable to delete the file '" + xmlFilePath + "'");
+                }
             }
         }
 
         logger.info("Creating the response file...");
-
-        /*
-        String nreOutput = "NRE: " + response.getNre();
-        String codiceAutenticazioneOutput = "Codice Autenticazione: " + response.getCodAutenticazione();
-        String dataInserimentoOutput = "Data Inserimento: " + response.getDataInserimento();
-        String codiceEsitoInserimentoOutput = "Codice Esito Inserimento: " + response.getCodEsitoInserimento();
+        String codiceEsitoOutput = "Codice Esito: " + ricettaDpcmInvioResponse.getCodiceEsito();
+        String protocolloSACOutput = "Protocollo SAC: " + ricettaDpcmInvioResponse.getProtocolloSAC();
+        String dataAccoglienzaOutput = "Data Accoglienza: " + ricettaDpcmInvioResponse.getDataAccoglienza();
+        String nomeFileAllegatoOutput = "Nome File Allegato: " + ricettaDpcmInvioResponse.getNomeFileAllegato();
+        String dimensioniFileAllegatoOutput = "Dimensioni File Allegato: " + ricettaDpcmInvioResponse.getDimensioneFileAllegato();
+        String descrizioneEsitoOutput = "Descrizione Esito: " + ricettaDpcmInvioResponse.getDescrizioneEsito();
 
         BufferedWriter bw = null;
         try{
-            if(response.getCodEsitoInserimento() != null && response.getCodEsitoInserimento().equals(ESITO_OK)){
-                File responseFile = new  File(ricettaResponseFilePath);
-                if(responseFile != null && responseFile.exists()){
-                    responseFile.delete();
-                }
-                FileWriter fw = new FileWriter(responseFile, true);
-                bw = new BufferedWriter(fw);
-
-                bw.write(nreOutput);
-                bw.newLine();
-                bw.write(codiceAutenticazioneOutput);
-                bw.newLine();
-                bw.write(dataInserimentoOutput);
-                bw.newLine();
-                bw.write(codiceEsitoInserimentoOutput);
-
-            } else{
-                logger.info("Creating the error response file...");
-
-                File errorResponseFile = new  File(ricettaErrorResponseFilePath);
-                if(errorResponseFile != null && errorResponseFile.exists()){
-                    errorResponseFile.delete();
-                }
-                FileWriter fw = new FileWriter(errorResponseFile, true);
-                bw = new BufferedWriter(fw);
-
-                bw.write(nreOutput);
-                bw.newLine();
-                bw.write(codiceAutenticazioneOutput);
-                bw.newLine();
-                bw.write(dataInserimentoOutput);
-                bw.newLine();
-                bw.write(codiceEsitoInserimentoOutput);
-                bw.newLine();
-
-                // Errori
-                ElencoErroriRicetteType elencoErroriRicetteType = response.getElencoErroriRicette();
-                if(elencoErroriRicetteType != null){
-                    List<ErroreRicettaType> erroriRicettaType = elencoErroriRicetteType.getErroreRicetta();
-                    if(erroriRicettaType != null && !erroriRicettaType.isEmpty()){
-                        bw.newLine();
-                        bw.write("Elenco Errori:");
-                        bw.newLine();
-                        for(ErroreRicettaType erroreRicettaType: erroriRicettaType){
-                            bw.write("Errore:");
-                            bw.newLine();
-                            bw.write("Codice Esito: " + erroreRicettaType.getCodEsito());
-                            bw.newLine();
-                            bw.write("Esito: " + erroreRicettaType.getEsito());
-                            bw.newLine();
-                            bw.write("Progr. Presc.: " + erroreRicettaType.getProgPresc());
-                            bw.newLine();
-                            bw.write("Tipo Errore: " + erroreRicettaType.getTipoErrore());
-                            bw.newLine();
-                        }
-                    }
-                }
-                // Comunicazioni
-                ElencoComunicazioniType elencoComunicazioniType = response.getElencoComunicazioni();
-                if(elencoComunicazioniType != null){
-                    List<ComunicazioneType> comunicazioneTypes = elencoComunicazioniType.getComunicazione();
-                    if(comunicazioneTypes != null && !comunicazioneTypes.isEmpty()){
-                        bw.newLine();
-                        bw.write("Elenco Comunicazioni:");
-                        bw.newLine();
-                        for(ComunicazioneType comunicazioneType : comunicazioneTypes){
-                            bw.write("Comunicazione:");
-                            bw.newLine();
-                            bw.write("Codice: " + comunicazioneType.getCodice());
-                            bw.newLine();
-                            bw.write("Messaggio: " + comunicazioneType.getMessaggio());
-                            bw.newLine();
-                        }
-                    }
-                }
+            File responseFile = new  File(ricettaDpcmResponseFilePath);
+            if(responseFile != null && responseFile.exists()){
+                responseFile.delete();
             }
+            FileWriter fw = new FileWriter(responseFile, true);
+            bw = new BufferedWriter(fw);
+
+            bw.write(codiceEsitoOutput);
+            bw.newLine();
+            bw.write(protocolloSACOutput);
+            bw.newLine();
+            bw.write(dataAccoglienzaOutput);
+            bw.newLine();
+            bw.write(nomeFileAllegatoOutput);
+            bw.newLine();
+            bw.write(dimensioniFileAllegatoOutput);
+            bw.newLine();
+            bw.write(descrizioneEsitoOutput);
 
         } catch(Exception e){
             bw.close();
@@ -444,7 +384,7 @@ public class RicettaMirService {
         } finally{
             bw.close();
         }
-        */
+
         logger.info("Response file successfully created");
     }
 

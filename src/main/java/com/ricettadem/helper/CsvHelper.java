@@ -25,7 +25,9 @@ public class CsvHelper {
 
     private static Logger logger = LoggerFactory.getLogger(CsvHelper.class);
 
-    public static Ricetta readRicettaCsv(String filePath, String delimiter, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi) throws Exception{
+    private static final String REGIONE_SICILIA = "sicilia";
+
+    public static Ricetta readRicettaCsv(String filePath, String delimiter, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi, String region) throws Exception{
         Ricetta ricetta = null;
 
         Path path = Paths.get(filePath);
@@ -35,19 +37,11 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if(Files.exists(path)) {
-//            try(Stream<String> lines = Files.lines(path)){
-//                allValues = lines
-//                        .map(line -> Arrays.asList(line.split(delimiter, -1)))
-//                        .collect(Collectors.toList());
-//            }
             String line = "";
             try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
 
                 while ((line = br.readLine()) != null) {
-
-                    // use comma as separator
                     String[] values = line.split(delimiter, -1);
-
                     allValues.add(Arrays.asList(values));
                 }
 
@@ -56,15 +50,8 @@ public class CsvHelper {
                 throw e;
             }
         }
-        List<String> values = allValues.get(0);
-        for(String v:values){
-            System.out.println("-> "+v);
-        }
         if(!allValues.isEmpty()){
-//            List<String> values = allValues.get(0);
-//            for(String v:values){
-//                System.out.println("-> "+v);
-//            }
+            List<String> values = allValues.get(0);
             if(!values.isEmpty()){
                 logger.info("The file contains " + values.size() + " elements");
                 if(values.size() < ricettaNumCampi){
@@ -133,12 +120,16 @@ public class CsvHelper {
                             dettaglioPrescrizione.setQuantita(values.get(startIndex + 10));
                             dettaglioPrescrizione.setInformazioniPrescrizione(values.get(startIndex + 11));
                             dettaglioPrescrizione.setInformazioniPrescrizione2(values.get(startIndex + 12));
-                            dettaglioPrescrizione.setCodiceCatalogoPrescrizione(values.get(startIndex + 13));
-                            dettaglioPrescrizione.setTipoAccesso1(values.get(startIndex + 14));
-                            dettaglioPrescrizione.setNumeroNota(values.get(startIndex + 15));
-                            dettaglioPrescrizione.setCondizioneErogabilita(values.get(startIndex + 16));
-                            dettaglioPrescrizione.setAppropriatezzaPrescrittiva(values.get(startIndex + 17));
-                            dettaglioPrescrizione.setPatologia(values.get(startIndex + 18));
+
+                            // se il file non è relativo alla regione Sicilia, proseguo con la lettura dei campi
+                            if(region == null || (region != null && !region.equalsIgnoreCase(REGIONE_SICILIA))){
+                                dettaglioPrescrizione.setCodiceCatalogoPrescrizione(values.get(startIndex + 13));
+                                dettaglioPrescrizione.setTipoAccesso1(values.get(startIndex + 14));
+                                dettaglioPrescrizione.setNumeroNota(values.get(startIndex + 15));
+                                dettaglioPrescrizione.setCondizioneErogabilita(values.get(startIndex + 16));
+                                dettaglioPrescrizione.setAppropriatezzaPrescrittiva(values.get(startIndex + 17));
+                                dettaglioPrescrizione.setPatologia(values.get(startIndex + 18));
+                            }
                         }
                         dettagliPrescrizione.add(dettaglioPrescrizione);
                         startIndex = startIndex + ricettaPrescrizioneNumCampi + 1;

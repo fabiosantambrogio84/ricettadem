@@ -54,13 +54,13 @@ public class Application {
         logger.info("Application closed");
     }
 
-    private void run(String type, String optionalRegion) throws Exception{
-        if(optionalRegion != null && !optionalRegion.equals("")){
-            logger.info("Executing program for region '" + optionalRegion + "'");
+    private void run(String type, String region) throws Exception{
+        if(region != null && !region.equals("")){
+            logger.info("Executing program for region '" + region + "'");
         }
         if(type.toLowerCase().equals("invio-ricetta")){
             try {
-                ricettaService.invia(optionalRegion);
+                ricettaService.invia(region);
             }catch(Exception e){
                 logger.error("Error during execution of 'invio-ricetta'", e);
                 throw e;
