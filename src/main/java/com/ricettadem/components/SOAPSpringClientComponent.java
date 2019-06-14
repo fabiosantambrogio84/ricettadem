@@ -117,9 +117,5 @@ public class SOAPSpringClientComponent {
 
         return request;
     }
-
-    public void createDpcmInvioRicetta(RicettaMir ricettaMir) throws Exception{
-//        ParametriInvio request = new ParametriInvio();
-        //request.
-    }
+    
 }

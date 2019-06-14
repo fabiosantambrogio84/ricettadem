@@ -77,112 +77,118 @@ public class RicettaService {
 
         logger.info("Esito operazione: " + response.getCodEsitoInserimento());
 
-        BufferedWriter bw = null;
         try{
             if(response.getCodEsitoInserimento() != null){
                 if(response.getCodEsitoInserimento().equals(ESITO_KO_BLOCCANTE)){
                     logger.info("Creating the error response file...");
-                    createRicevutaErrorFile(bw, nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput, response);
+                    createRicevutaErrorFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput, response);
                     logger.info("Error response file successfully created");
                 } else if(response.getCodEsitoInserimento().equals(ESITO_OK)){
                     logger.info("Creating the response file...");
-                    createRicevutaFile(bw, nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput);
+                    createRicevutaFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput);
                     logger.info("Response file successfully created");
                 } else{
                     logger.info("Creating the response file...");
-                    createRicevutaFile(bw, nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput);
+                    createRicevutaFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput);
                     logger.info("Response file successfully created");
 
                     logger.info("Creating the error response file...");
-                    createRicevutaErrorFile(bw, nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput, response);
+                    createRicevutaErrorFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput, response);
                     logger.info("Error response file successfully created");
                 }
             }
 
         } catch(Exception e){
-            bw.close();
             logger.error("Error creating response file", e);
             throw e;
-        } finally{
-            bw.close();
         }
 
         logger.info("Response file successfully created");
     }
 
-    private void createRicevutaFile(BufferedWriter bw, String nreOutput, String codiceAutenticazioneOutput, String dataInserimentoOutput, String codiceEsitoInserimentoOutput) throws Exception{
-        File responseFile = new  File(ricettaResponseFilePath);
-        if(responseFile != null && responseFile.exists()){
-            responseFile.delete();
-        }
-        FileWriter fw = new FileWriter(responseFile, true);
-        bw = new BufferedWriter(fw);
+    private void createRicevutaFile(String nreOutput, String codiceAutenticazioneOutput, String dataInserimentoOutput, String codiceEsitoInserimentoOutput) throws Exception{
+        BufferedWriter bw = null;
+        try{
+            File responseFile = new  File(ricettaResponseFilePath);
+            if(responseFile != null && responseFile.exists()){
+                responseFile.delete();
+            }
+            FileWriter fw = new FileWriter(responseFile, true);
+            bw = new BufferedWriter(fw);
 
-        bw.write(nreOutput);
-        bw.newLine();
-        bw.write(codiceAutenticazioneOutput);
-        bw.newLine();
-        bw.write(dataInserimentoOutput);
-        bw.newLine();
-        bw.write(codiceEsitoInserimentoOutput);
+            bw.write(nreOutput);
+            bw.newLine();
+            bw.write(codiceAutenticazioneOutput);
+            bw.newLine();
+            bw.write(dataInserimentoOutput);
+            bw.newLine();
+            bw.write(codiceEsitoInserimentoOutput);
+        }finally{
+            bw.close();
+        }
     }
 
-    private void createRicevutaErrorFile(BufferedWriter bw, String nreOutput, String codiceAutenticazioneOutput, String dataInserimentoOutput, String codiceEsitoInserimentoOutput, InvioPrescrittoRicevuta response) throws Exception {
-        File errorResponseFile = new  File(ricettaErrorResponseFilePath);
-        if(errorResponseFile != null && errorResponseFile.exists()){
-            errorResponseFile.delete();
-        }
-        FileWriter fw = new FileWriter(errorResponseFile, true);
-        bw = new BufferedWriter(fw);
+    private void createRicevutaErrorFile(String nreOutput, String codiceAutenticazioneOutput, String dataInserimentoOutput, String codiceEsitoInserimentoOutput, InvioPrescrittoRicevuta response) throws Exception {
+        BufferedWriter bw = null;
+        try{
+            File errorResponseFile = new  File(ricettaErrorResponseFilePath);
+            if(errorResponseFile != null && errorResponseFile.exists()){
+                errorResponseFile.delete();
+            }
+            FileWriter fw = new FileWriter(errorResponseFile, true);
+            bw = new BufferedWriter(fw);
 
-        bw.write(nreOutput);
-        bw.newLine();
-        bw.write(codiceAutenticazioneOutput);
-        bw.newLine();
-        bw.write(dataInserimentoOutput);
-        bw.newLine();
-        bw.write(codiceEsitoInserimentoOutput);
-        bw.newLine();
+            bw.write(nreOutput);
+            bw.newLine();
+            bw.write(codiceAutenticazioneOutput);
+            bw.newLine();
+            bw.write(dataInserimentoOutput);
+            bw.newLine();
+            bw.write(codiceEsitoInserimentoOutput);
+            bw.newLine();
 
-        // Errori
-        ElencoErroriRicetteType elencoErroriRicetteType = response.getElencoErroriRicette();
-        if(elencoErroriRicetteType != null){
-            List<ErroreRicettaType> erroriRicettaType = elencoErroriRicetteType.getErroreRicetta();
-            if(erroriRicettaType != null && !erroriRicettaType.isEmpty()){
-                bw.newLine();
-                bw.write("Elenco Errori:");
-                bw.newLine();
-                for(ErroreRicettaType erroreRicettaType: erroriRicettaType){
-                    bw.write("Errore:");
+            // Errori
+            ElencoErroriRicetteType elencoErroriRicetteType = response.getElencoErroriRicette();
+            if(elencoErroriRicetteType != null){
+                List<ErroreRicettaType> erroriRicettaType = elencoErroriRicetteType.getErroreRicetta();
+                if(erroriRicettaType != null && !erroriRicettaType.isEmpty()){
                     bw.newLine();
-                    bw.write("Codice Esito: " + erroreRicettaType.getCodEsito());
+                    bw.write("Elenco Errori:");
                     bw.newLine();
-                    bw.write("Esito: " + erroreRicettaType.getEsito());
-                    bw.newLine();
-                    bw.write("Progr. Presc.: " + erroreRicettaType.getProgPresc());
-                    bw.newLine();
-                    bw.write("Tipo Errore: " + erroreRicettaType.getTipoErrore());
-                    bw.newLine();
+                    for(ErroreRicettaType erroreRicettaType: erroriRicettaType){
+                        bw.write("Errore:");
+                        bw.newLine();
+                        bw.write("Codice Esito: " + erroreRicettaType.getCodEsito());
+                        bw.newLine();
+                        bw.write("Esito: " + erroreRicettaType.getEsito());
+                        bw.newLine();
+                        bw.write("Progr. Presc.: " + erroreRicettaType.getProgPresc());
+                        bw.newLine();
+                        bw.write("Tipo Errore: " + erroreRicettaType.getTipoErrore());
+                        bw.newLine();
+                    }
                 }
             }
-        }
-        // Comunicazioni
-        ElencoComunicazioniType elencoComunicazioniType = response.getElencoComunicazioni();
-        if(elencoComunicazioniType != null){
-            List<ComunicazioneType> comunicazioneTypes = elencoComunicazioniType.getComunicazione();
-            if(comunicazioneTypes != null && !comunicazioneTypes.isEmpty()){
-                bw.newLine();
-                bw.write("Elenco Comunicazioni:");
-                bw.newLine();
-                for(ComunicazioneType comunicazioneType : comunicazioneTypes){
-                    bw.write("Comunicazione:");
+            // Comunicazioni
+            ElencoComunicazioniType elencoComunicazioniType = response.getElencoComunicazioni();
+            if(elencoComunicazioniType != null){
+                List<ComunicazioneType> comunicazioneTypes = elencoComunicazioniType.getComunicazione();
+                if(comunicazioneTypes != null && !comunicazioneTypes.isEmpty()){
                     bw.newLine();
-                    bw.write("Codice: " + comunicazioneType.getCodice());
+                    bw.write("Elenco Comunicazioni:");
                     bw.newLine();
-                    bw.write("Messaggio: " + comunicazioneType.getMessaggio());
-                    bw.newLine();
+                    for(ComunicazioneType comunicazioneType : comunicazioneTypes){
+                        bw.write("Comunicazione:");
+                        bw.newLine();
+                        bw.write("Codice: " + comunicazioneType.getCodice());
+                        bw.newLine();
+                        bw.write("Messaggio: " + comunicazioneType.getMessaggio());
+                        bw.newLine();
+                    }
                 }
             }
+        } finally{
+            bw.close();
         }
     }
 }

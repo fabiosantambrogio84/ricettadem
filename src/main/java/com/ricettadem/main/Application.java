@@ -47,8 +47,7 @@ public class Application {
             }
             app.run(arg1, arg2);
         } catch(Exception e){
-            //logger.error("No argument was specified. Unable to run the application.");
-            throw e;
+            logger.error("Error during the execution of the application", e);
         }
 
         logger.info("Application closed");
