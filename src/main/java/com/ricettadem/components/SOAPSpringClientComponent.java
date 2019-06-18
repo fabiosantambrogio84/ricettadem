@@ -5,9 +5,7 @@ import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
-import com.ricettadem.model.dpcm.RicettaMir;
 import com.ricettadem.soap.annullaPrescritto.AnnullaPrescrittoRichiesta;
-
 import com.ricettadem.soap.invioPrescritto.DettaglioPrescrizioneType;
 import com.ricettadem.soap.invioPrescritto.ElencoDettagliPrescrizioniType;
 import com.ricettadem.soap.invioPrescritto.InvioPrescrittoRichiesta;

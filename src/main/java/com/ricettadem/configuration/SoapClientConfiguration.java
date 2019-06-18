@@ -21,10 +21,10 @@ import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.net.ssl.SSLContext;
 import javax.xml.bind.DatatypeConverter;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.security.KeyStore;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,31 +34,20 @@ public class SoapClientConfiguration {
 
     private static Logger logger = LoggerFactory.getLogger(SoapClientConfiguration.class);
 
-//    @Value("${ws.username}")
-//    private String username;
-//
-//    @Value("${ws.password}")
-//    private String password;
-
     @Value("${ws.credentials.file-path}")
     private String credentialsFilePath;
+
+    @Value("${certificate.file-path}")
+    private String certificateFilePath;
+
+    @Value("${dpcm.certificate.file-path}")
+    private String dpcmCertificateFilePath;
 
     @Value("${ws.ssl.truststore}")
     private File trustStore;
 
     @Value("${ws.ssl.truststore-password}")
     private String trustStorePassword;
-
-//    @Bean
-//    Jaxb2Marshaller jaxb2Marshaller() {
-//        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-//        jaxb2Marshaller.setContextPaths("com.ricettadem.soap.invioPrescritto",
-//                "com.ricettadem.soap.annullaPrescritto",
-//                "com.ricettadem.soap.richiestaLottiNre");
-//
-////        setContextPath("com.ricettadem.soap");
-//        return jaxb2Marshaller;
-//    }
 
     @Bean
     Jaxb2Marshaller jaxb2MarshallerInvioPrescritto() {
@@ -80,20 +69,6 @@ public class SoapClientConfiguration {
         jaxb2Marshaller.setContextPath("com.ricettadem.soap.richiestaLottiNre");
         return jaxb2Marshaller;
     }
-
-//    @Bean
-//    public WebServiceTemplate webServiceTemplate() throws Exception {
-//        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
-//        webServiceTemplate.setMarshaller(jaxb2Marshaller());
-//        webServiceTemplate.setUnmarshaller(jaxb2Marshaller());
-//        ClientInterceptor[] interceptors =
-//                new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
-//        webServiceTemplate.setInterceptors(interceptors);
-//
-//        // set a HttpComponentsMessageSender which provides support for basic authentication
-//        webServiceTemplate.setMessageSender(httpComponentsMessageSender());
-//        return webServiceTemplate;
-//    }
 
     @Bean
     public WebServiceTemplate webServiceTemplateInvioPrescritto() throws Exception {
@@ -140,8 +115,6 @@ public class SoapClientConfiguration {
     @Bean
     public HttpComponentsMessageSender httpComponentsMessageSender() throws Exception {
         HttpComponentsMessageSender httpComponentsMessageSender = new HttpComponentsMessageSender();
-        // set the basic authorization credentials
-//        httpComponentsMessageSender.setCredentials(usernamePasswordCredentials());
         httpComponentsMessageSender.setConnectionTimeout(60000);
         httpComponentsMessageSender.setReadTimeout(60000);
         httpComponentsMessageSender.setHttpClient(httpClient());
@@ -149,17 +122,8 @@ public class SoapClientConfiguration {
         return httpComponentsMessageSender;
     }
 
-//    @Bean
-//    public UsernamePasswordCredentials usernamePasswordCredentials() {
-//        // pass the user name and password to be used
-//        return new UsernamePasswordCredentials(username, password);
-//    }
 
     public HttpClient httpClient() throws Exception {
-//        CredentialsProvider provider = new BasicCredentialsProvider();
-//        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//        provider.setCredentials(AuthScope.ANY, credentials);
-
         Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
         List<Header> headers = new ArrayList<>();
         headers.add(header);
@@ -167,7 +131,6 @@ public class SoapClientConfiguration {
         return HttpClientBuilder.create()
                 .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
                 .setSSLSocketFactory(sslConnectionSocketFactory())
-//                .setDefaultCredentialsProvider(provider)
                 .setDefaultHeaders(headers)
                 .build();
     }
@@ -179,6 +142,54 @@ public class SoapClientConfiguration {
     }
 
     public SSLContext sslContext() throws Exception {
+        KeyStore ks = KeyStore.getInstance("JKS");
+        CertificateFactory cf = CertificateFactory.getInstance("X509");
+
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        FileInputStream fisCertificate = null;
+        FileInputStream fisDpcmCertificate = null;
+        try{
+            // load the keystore
+            fis = new FileInputStream(trustStore);
+            ks.load(fis, trustStorePassword.toCharArray());
+
+            if(!ks.containsAlias("ricetta-dem-cert")){
+                // load the certificate
+                fisCertificate = new FileInputStream(certificateFilePath);
+
+                X509Certificate certificate = (X509Certificate) cf.generateCertificate(fisCertificate);
+                ks.setCertificateEntry("ricetta-dem-cert", certificate);
+
+            }
+            if(!ks.containsAlias("ricetta-dpcm-dem-cert")){
+                // load the DPCM certificate
+                fisDpcmCertificate = new FileInputStream(dpcmCertificateFilePath);
+
+                X509Certificate dpcmCertificate = (X509Certificate) cf.generateCertificate(fisDpcmCertificate);
+                ks.setCertificateEntry("ricetta-dpcm-dem-cert", dpcmCertificate);
+            }
+            fos = new FileOutputStream(trustStore);
+            ks.store(fos, trustStorePassword.toCharArray());
+
+        } catch(Exception e){
+            logger.error("Error creating ssl context", e);
+            throw e;
+        } finally {
+            if(fis != null){
+                fis.close();
+            }
+            if(fisCertificate != null){
+                fisCertificate.close();
+            }
+            if(fisDpcmCertificate != null){
+                fisDpcmCertificate.close();
+            }
+            if(fos != null){
+                fos.close();
+            }
+        }
+
         return SSLContextBuilder.create()
                 .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
     }
