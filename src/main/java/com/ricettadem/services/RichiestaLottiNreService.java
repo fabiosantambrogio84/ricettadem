@@ -98,6 +98,7 @@ public class RichiestaLottiNreService {
             bw.write(codEsitoRichiestaOutput);
             bw.newLine();
             bw.write(esitoRichiestaOutput);
+            bw.newLine();
 
         } catch(Exception e){
             bw.close();

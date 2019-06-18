@@ -82,6 +82,7 @@ public class AnnullaRicettaService {
                 bw.write(nreOutput);
                 bw.newLine();
                 bw.write(codEsitoAnnullamentoOutput);
+                bw.newLine();
 
             } else{
                 logger.info("Creating the error response file...");

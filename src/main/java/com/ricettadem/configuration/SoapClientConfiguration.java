@@ -154,21 +154,24 @@ public class SoapClientConfiguration {
             fis = new FileInputStream(trustStore);
             ks.load(fis, trustStorePassword.toCharArray());
 
-            if(!ks.containsAlias("ricetta-dem-cert")){
-                // load the certificate
-                fisCertificate = new FileInputStream(certificateFilePath);
-
-                X509Certificate certificate = (X509Certificate) cf.generateCertificate(fisCertificate);
-                ks.setCertificateEntry("ricetta-dem-cert", certificate);
-
+            if(ks.containsAlias("ricetta-dem-cert")){
+                ks.deleteEntry("ricetta-dem-cert");
             }
-            if(!ks.containsAlias("ricetta-dpcm-dem-cert")){
-                // load the DPCM certificate
-                fisDpcmCertificate = new FileInputStream(dpcmCertificateFilePath);
-
-                X509Certificate dpcmCertificate = (X509Certificate) cf.generateCertificate(fisDpcmCertificate);
-                ks.setCertificateEntry("ricetta-dpcm-dem-cert", dpcmCertificate);
+            if(ks.containsAlias("ricetta-dpcm-dem-cert")){
+                ks.deleteEntry("ricetta-dpcm-dem-cert");
             }
+
+            // load the certificate
+            fisCertificate = new FileInputStream(certificateFilePath);
+            X509Certificate certificate = (X509Certificate) cf.generateCertificate(fisCertificate);
+            ks.setCertificateEntry("ricetta-dem-cert", certificate);
+
+            // load the DPCM certificate
+            fisDpcmCertificate = new FileInputStream(dpcmCertificateFilePath);
+            X509Certificate dpcmCertificate = (X509Certificate) cf.generateCertificate(fisDpcmCertificate);
+            ks.setCertificateEntry("ricetta-dpcm-dem-cert", dpcmCertificate);
+
+            // save the keystore
             fos = new FileOutputStream(trustStore);
             ks.store(fos, trustStorePassword.toCharArray());
 

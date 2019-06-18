@@ -48,9 +48,11 @@ public class Application {
             app.run(arg1, arg2);
         } catch(Exception e){
             logger.error("Error during the execution of the application", e);
+            System.exit(1);
         }
 
         logger.info("Application closed");
+        System.exit(0);
     }
 
     private void run(String type, String region) throws Exception{

@@ -123,6 +123,7 @@ public class RicettaService {
             bw.write(dataInserimentoOutput);
             bw.newLine();
             bw.write(codiceEsitoInserimentoOutput);
+            bw.newLine();
         }finally{
             bw.close();
         }

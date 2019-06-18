@@ -376,6 +376,7 @@ public class RicettaMirService {
             bw.write(dimensioniFileAllegatoOutput);
             bw.newLine();
             bw.write(descrizioneEsitoOutput);
+            bw.newLine();
 
         } catch(Exception e){
             bw.close();
