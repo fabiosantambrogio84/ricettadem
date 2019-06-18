@@ -79,11 +79,7 @@ public class RicettaService {
 
         try{
             if(response.getCodEsitoInserimento() != null){
-                if(response.getCodEsitoInserimento().equals(ESITO_KO_BLOCCANTE)){
-                    logger.info("Creating the error response file...");
-                    createRicevutaErrorFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput, response);
-                    logger.info("Error response file successfully created");
-                } else if(response.getCodEsitoInserimento().equals(ESITO_OK)){
+                if(response.getCodEsitoInserimento().equals(ESITO_OK)){
                     logger.info("Creating the response file...");
                     createRicevutaFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput);
                     logger.info("Response file successfully created");
