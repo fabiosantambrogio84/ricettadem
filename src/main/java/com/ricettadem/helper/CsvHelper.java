@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,15 +31,16 @@ public class CsvHelper {
     public static Ricetta readRicettaCsv(String filePath, String delimiter, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi, String region) throws Exception{
         Ricetta ricetta = null;
 
-        Path path = Paths.get(filePath);
+//        Path path = Paths.get(filePath);
+        File path = new File(filePath);
 
         logger.info("Processing file '" + filePath + "'");
 
         List<List<String>> allValues = new ArrayList<>();
 
-        if(Files.exists(path)) {
+        if(path.exists()) {
             String line = "";
-            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
                     String[] values = line.split(delimiter, -1);

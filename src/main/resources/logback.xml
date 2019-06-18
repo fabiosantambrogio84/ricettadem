@@ -34,9 +34,8 @@
         </rollingPolicy>
     </appender>
     -->
-
     <appender name="File" class="ch.qos.logback.core.FileAppender">
-        <file>./ricetta-dem.log</file>
+        <file>ricetta-dem.log</file>
         <append>false</append>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
