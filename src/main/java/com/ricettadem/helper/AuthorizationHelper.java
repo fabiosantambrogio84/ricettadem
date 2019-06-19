@@ -22,7 +22,7 @@ public class AuthorizationHelper {
         List<String> list = new ArrayList<>();
 
         String line = "";
-        try (BufferedReader br = new BufferedReader(new FileReader("/home/developer/Desktop/fabio_temp/Antonio/config/SARuser.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(credentialsFilePath))) {
 
             while ((line = br.readLine()) != null) {
                 list.add(line);

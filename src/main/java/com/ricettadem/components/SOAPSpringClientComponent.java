@@ -103,6 +103,7 @@ public class SOAPSpringClientComponent {
         LottoRichiestaNRE request = new LottoRichiestaNRE();
         request.setCodRegione(richiestaLottiNre.getCodiceRegione());
         request.setIdentificativoLotto(richiestaLottiNre.getParamDimensioneLotto());
+        request.setCFMedico(richiestaLottiNre.getCodiceFiscale());
 
         return request;
     }

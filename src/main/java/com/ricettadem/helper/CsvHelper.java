@@ -154,15 +154,16 @@ public class CsvHelper {
     public static RichiestaLottiNre readRichiestaLottiNreCsv(String filePath, String delimiter, Integer richiestaLottiNreNumCampi) throws Exception {
         RichiestaLottiNre richiestaLottiNre = null;
 
-        Path path = Paths.get(filePath);
+//        Path path = Paths.get(filePath);
+        File path = new File(filePath);
 
         logger.info("Processing file '" + filePath + "'");
 
         List<List<String>> allValues = new ArrayList<>();
 
-        if (Files.exists(path)) {
+        if (path.exists()) {
             String line = "";
-            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
 
@@ -205,15 +206,16 @@ public class CsvHelper {
     public static AnnullaRicetta readAnnullaRicettaCsv(String filePath, String delimiter, Integer annullaRicettaNumCampi) throws Exception {
         AnnullaRicetta annullaRicetta = null;
 
-        Path path = Paths.get(filePath);
+//        Path path = Paths.get(filePath);
+        File path = new File(filePath);
 
         logger.info("Processing file '" + filePath + "'");
 
         List<List<String>> allValues = new ArrayList<>();
 
-        if (Files.exists(path)) {
+        if (path.exists()) {
             String line = "";
-            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
 
@@ -256,15 +258,16 @@ public class CsvHelper {
     public static RicettaMir readRicettaDpcmCsv(String filePath, String delimiter, Integer testataNumCampi, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi) throws Exception{
         RicettaMir ricettaDpcm = null;
 
-        Path path = Paths.get(filePath);
+//        Path path = Paths.get(filePath);
+        File path = new File(filePath);
 
         logger.info("Processing file '" + filePath + "'");
 
         List<List<String>> allValues = new ArrayList<>();
 
-        if(Files.exists(path)) {
+        if(path.exists()) {
             String line = "";
-            try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
 
