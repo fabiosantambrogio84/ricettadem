@@ -34,8 +34,13 @@ public class SoapClientConfiguration {
 
     private static Logger logger = LoggerFactory.getLogger(SoapClientConfiguration.class);
 
+    private static final String REGIONE_SICILIA = "sicilia";
+
     @Value("${ws.credentials.file-path}")
     private String credentialsFilePath;
+
+    @Value("${ws.sicilia.credentials.file-path}")
+    private String siciliaCredentialsFilePath;
 
     @Value("${certificate.file-path}")
     private String certificateFilePath;
@@ -85,6 +90,20 @@ public class SoapClientConfiguration {
     }
 
     @Bean
+    public WebServiceTemplate webServiceTemplateInvioPrescrittoSicilia() throws Exception {
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
+        webServiceTemplate.setMarshaller(jaxb2MarshallerInvioPrescritto());
+        webServiceTemplate.setUnmarshaller(jaxb2MarshallerInvioPrescritto());
+        ClientInterceptor[] interceptors =
+                new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
+        webServiceTemplate.setInterceptors(interceptors);
+
+        // set a HttpComponentsMessageSender which provides support for basic authentication
+        webServiceTemplate.setMessageSender(httpComponentsMessageSender2());
+        return webServiceTemplate;
+    }
+
+    @Bean
     public WebServiceTemplate webServiceTemplateAnnullaPrescritto() throws Exception {
         WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
         webServiceTemplate.setMarshaller(jaxb2MarshallerAnnullaPrescritto());
@@ -122,9 +141,31 @@ public class SoapClientConfiguration {
         return httpComponentsMessageSender;
     }
 
+    @Bean
+    public HttpComponentsMessageSender httpComponentsMessageSender2() throws Exception {
+        HttpComponentsMessageSender httpComponentsMessageSender = new HttpComponentsMessageSender();
+        httpComponentsMessageSender.setConnectionTimeout(60000);
+        httpComponentsMessageSender.setReadTimeout(60000);
+        httpComponentsMessageSender.setHttpClient(httpClient2());
+
+        return httpComponentsMessageSender;
+    }
+
 
     public HttpClient httpClient() throws Exception {
-        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
+        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials(null));
+        List<Header> headers = new ArrayList<>();
+        headers.add(header);
+
+        return HttpClientBuilder.create()
+                .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
+                .setSSLSocketFactory(sslConnectionSocketFactory())
+                .setDefaultHeaders(headers)
+                .build();
+    }
+
+    public HttpClient httpClient2() throws Exception {
+        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials(REGIONE_SICILIA));
         List<Header> headers = new ArrayList<>();
         headers.add(header);
 
@@ -197,15 +238,20 @@ public class SoapClientConfiguration {
                 .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
     }
 
-    private String createCredentials() throws Exception{
+    private String createCredentials(String region) throws Exception{
         logger.info("Reading credentials...");
+
+        String credentialsPath = credentialsFilePath;
+        if(region != null && region.equalsIgnoreCase(REGIONE_SICILIA)){
+            credentialsPath = siciliaCredentialsFilePath;
+        }
 
         String base64Credentials = "";
 
         List<String> list = new ArrayList<>();
 
         String line = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(credentialsFilePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(credentialsPath))) {
 
             while ((line = br.readLine()) != null) {
                 list.add(line);

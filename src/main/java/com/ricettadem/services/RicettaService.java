@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,6 +38,9 @@ public class RicettaService {
     @Value("${ws.uri.invio-ricetta}")
     private String uriInvioRicetta;
 
+    @Value("${ws.sicilia.uri.invio-ricetta}")
+    private String uriSiciliaInvioRicetta;
+
     @Value("${ricetta.request.file-path}")
     private String ricettaFilePath;
 
@@ -52,6 +56,9 @@ public class RicettaService {
     @Autowired
     WebServiceTemplate webServiceTemplateInvioPrescritto;
 
+    @Autowired
+    HttpComponentsMessageSender httpComponentsMessageSender2;
+
 
     public void invia(String region) throws Exception{
         logger.info("INVIO RICETTA DEMATERIALIZZATA");
@@ -63,9 +70,16 @@ public class RicettaService {
         InvioPrescrittoRichiesta request = soapSpringClientComponent.createInvioPrescrittoRichiesta(ricetta);
         logger.info("Soap request successfully created");
 
-        logger.info("Performing the soap request...");
-        webServiceTemplateInvioPrescritto.setDefaultUri(uriInvioRicetta);
-        InvioPrescrittoRicevuta response = (InvioPrescrittoRicevuta)webServiceTemplateInvioPrescritto.marshalSendAndReceive(request);
+        InvioPrescrittoRicevuta response = null;
+        if(region != null && region.equalsIgnoreCase("sicilia")){
+            logger.info("Performing the soap request for Sicilia...");
+            webServiceTemplateInvioPrescritto.setDefaultUri(uriSiciliaInvioRicetta);
+            webServiceTemplateInvioPrescritto.setMessageSender(httpComponentsMessageSender2);
+        } else{
+            logger.info("Performing the soap request...");
+            webServiceTemplateInvioPrescritto.setDefaultUri(uriInvioRicetta);
+        }
+        response = (InvioPrescrittoRicevuta)webServiceTemplateInvioPrescritto.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 
         logger.info("Creating the response file...");
