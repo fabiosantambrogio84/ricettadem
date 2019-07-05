@@ -9,10 +9,13 @@ import org.springframework.stereotype.Component;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+import javax.net.ssl.*;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URL;
+import java.security.cert.X509Certificate;
 import java.util.Iterator;
 
 @Component
@@ -33,6 +36,20 @@ public class SOAPClientComponent {
     private String ricettaErrorResponseFilePath;
 
     public RicettaDpcmInvioResponse sendInvioRicettaDpcm(String fileName, File file) throws Exception{
+
+        // Create SSL context and trust all certificates
+        SSLContext sslContext = SSLContext.getInstance("SSL");
+        TrustManager[] trustAll = new TrustManager[] {new TrustAllCertificates()};
+        sslContext.init(null, trustAll, new java.security.SecureRandom());
+        // Set trust all certificates context to HttpsURLConnection
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+        URL url = new URL(uriInvioRicettaDpcm);
+        HttpsURLConnection httpsConnection = (HttpsURLConnection) url.openConnection();
+        // Trust all hosts
+        httpsConnection.setHostnameVerifier(new TrustAllHosts());
+        // Connect
+        httpsConnection.connect();
 
         RicettaDpcmInvioResponse ricettaDpcmInvioResponse = null;
 
@@ -121,6 +138,8 @@ public class SOAPClientComponent {
             logger.info("Response is: " + ricettaDpcmInvioResponse.toString());
         }
 
+        httpsConnection.disconnect();
+
         return ricettaDpcmInvioResponse;
     }
 
@@ -139,6 +158,24 @@ public class SOAPClientComponent {
             } catch(Exception e){
 
             }
+        }
+    }
+
+    private static class TrustAllCertificates implements X509TrustManager {
+        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        }
+
+        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        }
+
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+    }
+
+    private static class TrustAllHosts implements HostnameVerifier {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
         }
     }
 
