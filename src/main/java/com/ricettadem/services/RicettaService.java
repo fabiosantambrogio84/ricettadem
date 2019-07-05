@@ -38,9 +38,6 @@ public class RicettaService {
     @Value("${ws.uri.invio-ricetta}")
     private String uriInvioRicetta;
 
-    @Value("${ws.sicilia.uri.invio-ricetta}")
-    private String uriSiciliaInvioRicetta;
-
     @Value("${ricetta.request.file-path}")
     private String ricettaFilePath;
 
@@ -73,12 +70,11 @@ public class RicettaService {
         InvioPrescrittoRicevuta response = null;
         if(region != null && region.equalsIgnoreCase("sicilia")){
             logger.info("Performing the soap request for Sicilia...");
-            webServiceTemplateInvioPrescritto.setDefaultUri(uriSiciliaInvioRicetta);
-            webServiceTemplateInvioPrescritto.setMessageSender(httpComponentsMessageSender2);
+//            webServiceTemplateInvioPrescritto.setMessageSender(httpComponentsMessageSender2);
         } else{
             logger.info("Performing the soap request...");
-            webServiceTemplateInvioPrescritto.setDefaultUri(uriInvioRicetta);
         }
+        webServiceTemplateInvioPrescritto.setDefaultUri(uriInvioRicetta);
         response = (InvioPrescrittoRicevuta)webServiceTemplateInvioPrescritto.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 

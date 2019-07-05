@@ -1,9 +1,7 @@
 package com.ricettadem.components;
 
-import com.ricettadem.core.BinaryDataSource;
 import com.ricettadem.helper.AuthorizationHelper;
 import com.ricettadem.model.dpcm.RicettaDpcmInvioResponse;
-import com.ricettadem.services.dpcm.RicettaMirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +13,6 @@ import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Iterator;
 
 @Component
