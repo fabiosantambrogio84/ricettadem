@@ -31,7 +31,6 @@ public class CsvHelper {
     public static Ricetta readRicettaCsv(String filePath, String delimiter, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi, String region) throws Exception{
         Ricetta ricetta = null;
 
-//        Path path = Paths.get(filePath);
         File path = new File(filePath);
 
         logger.info("Processing file '" + filePath + "'");
@@ -124,14 +123,14 @@ public class CsvHelper {
                             dettaglioPrescrizione.setInformazioniPrescrizione2(values.get(startIndex + 12));
 
                             // se il file non è relativo alla regione Sicilia, proseguo con la lettura dei campi
-                            if(region == null || (region != null && !region.equalsIgnoreCase(REGIONE_SICILIA))){
+                            //if(region == null || (region != null && !region.equalsIgnoreCase(REGIONE_SICILIA))){
                                 dettaglioPrescrizione.setCodiceCatalogoPrescrizione(values.get(startIndex + 13));
                                 dettaglioPrescrizione.setTipoAccesso1(values.get(startIndex + 14));
                                 dettaglioPrescrizione.setNumeroNota(values.get(startIndex + 15));
                                 dettaglioPrescrizione.setCondizioneErogabilita(values.get(startIndex + 16));
                                 dettaglioPrescrizione.setAppropriatezzaPrescrittiva(values.get(startIndex + 17));
                                 dettaglioPrescrizione.setPatologia(values.get(startIndex + 18));
-                            }
+                            //}
                         }
                         dettagliPrescrizione.add(dettaglioPrescrizione);
                         startIndex = startIndex + ricettaPrescrizioneNumCampi + 1;
@@ -154,7 +153,6 @@ public class CsvHelper {
     public static RichiestaLottiNre readRichiestaLottiNreCsv(String filePath, String delimiter, Integer richiestaLottiNreNumCampi) throws Exception {
         RichiestaLottiNre richiestaLottiNre = null;
 
-//        Path path = Paths.get(filePath);
         File path = new File(filePath);
 
         logger.info("Processing file '" + filePath + "'");
