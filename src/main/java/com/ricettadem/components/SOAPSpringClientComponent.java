@@ -22,12 +22,21 @@ public class SOAPSpringClientComponent {
 
     private static Logger logger = LoggerFactory.getLogger(SOAPSpringClientComponent.class);
 
+    private static final String REGIONE_SICILIA = "sicilia";
+
     @Value("${certificate.file-path}")
     private String certificateFilePath;
 
-    public InvioPrescrittoRichiesta createInvioPrescrittoRichiesta(Ricetta ricetta) throws Exception{
+    @Value("${sac.certificate.file-path}")
+    private String sacCertificateFilePath;
+
+    public InvioPrescrittoRichiesta createInvioPrescrittoRichiesta(Ricetta ricetta, String region) throws Exception{
         InvioPrescrittoRichiesta request = new InvioPrescrittoRichiesta();
-        request.setPinCode(ricetta.getPincode());
+        if(region != null && region.equalsIgnoreCase(REGIONE_SICILIA)){
+            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getPincode(), sacCertificateFilePath));
+        } else{
+            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getPincode(), certificateFilePath));
+        }
         request.setCfMedico1(ricetta.getCodiceFiscaleMedico());
         request.setCfMedico2(ricetta.getCodiceFiscaleMedico2());
         request.setCodRegione(ricetta.getCodiceRegione());
@@ -38,7 +47,11 @@ public class SOAPSpringClientComponent {
         request.setTestata2(ricetta.getInformazioniAggiuntive2());
         request.setNre(ricetta.getNre());
         request.setTipoRic(ricetta.getTipoRicetta());
-        request.setCodiceAss(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), certificateFilePath));
+        if(region != null && region.equalsIgnoreCase(REGIONE_SICILIA)){
+            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), sacCertificateFilePath));
+        } else{
+            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), certificateFilePath));
+        }
         request.setCognNome(ricetta.getCognomeAssistito());
         request.setIndirizzo(ricetta.getIndirizzoAssistito());
         request.setOscuramDati(ricetta.getOscuramentoDati());

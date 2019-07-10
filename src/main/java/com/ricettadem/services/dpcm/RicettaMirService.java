@@ -59,8 +59,8 @@ public class RicettaMirService {
     @Value("${dpcm.ricetta.tmp-folder-delete}")
     private String ricettaDpcmDeleteTmpFolder;
 
-    @Value("${dpcm.certificate.file-path}")
-    private String dpcmCertificateFilePath;
+    @Value("${sac.certificate.file-path}")
+    private String sacCertificateFilePath;
 
     @Autowired
     private SOAPClientComponent soapClientComponent;
@@ -83,7 +83,7 @@ public class RicettaMirService {
         xmlStreamWriter.writeStartElement("Testata");
 
         xmlStreamWriter.writeStartElement("PinCode");
-        xmlStreamWriter.writeCharacters(EncryptDecryptHelper.encrypt(ricettaMir.getTestata().getPinCode(), dpcmCertificateFilePath));
+        xmlStreamWriter.writeCharacters(EncryptDecryptHelper.encrypt(ricettaMir.getTestata().getPinCode(), sacCertificateFilePath));
         xmlStreamWriter.writeEndElement();
 
         xmlStreamWriter.writeStartElement("TipoInvio");
@@ -122,7 +122,7 @@ public class RicettaMirService {
         xmlStreamWriter.writeEndElement();
 
         xmlStreamWriter.writeStartElement("CodiceAss");
-        xmlStreamWriter.writeCharacters(EncryptDecryptHelper.encrypt(ricettaDpcm.getCodAssistito(), dpcmCertificateFilePath));
+        xmlStreamWriter.writeCharacters(EncryptDecryptHelper.encrypt(ricettaDpcm.getCodAssistito(), sacCertificateFilePath));
         xmlStreamWriter.writeEndElement();
 
         xmlStreamWriter.writeStartElement("TipoPrescrizione");

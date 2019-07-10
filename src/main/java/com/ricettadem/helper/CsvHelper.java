@@ -138,7 +138,7 @@ public class CsvHelper {
                     logger.info("End creating Dettagli Prescrizione");
 
                     ricetta.setDettagliPrescrizione(dettagliPrescrizione);
-                    logger.info("RicettaDpcm successfully created: " + ricetta.toString());
+                    logger.info("Ricetta successfully created: " + ricetta.toString());
                 }
             } else{
                 throw new RuntimeException("Il file in ingresso è vuoto");

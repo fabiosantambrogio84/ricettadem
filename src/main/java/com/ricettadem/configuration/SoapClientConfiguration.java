@@ -45,8 +45,8 @@ public class SoapClientConfiguration {
     @Value("${certificate.file-path}")
     private String certificateFilePath;
 
-    @Value("${dpcm.certificate.file-path}")
-    private String dpcmCertificateFilePath;
+    @Value("${sac.certificate.file-path}")
+    private String sacCertificateFilePath;
 
     @Value("${ws.ssl.truststore}")
     private File trustStore;
@@ -208,7 +208,7 @@ public class SoapClientConfiguration {
             ks.setCertificateEntry("ricetta-dem-cert", certificate);
 
             // load the DPCM certificate
-            fisDpcmCertificate = new FileInputStream(dpcmCertificateFilePath);
+            fisDpcmCertificate = new FileInputStream(sacCertificateFilePath);
             X509Certificate dpcmCertificate = (X509Certificate) cf.generateCertificate(fisDpcmCertificate);
             ks.setCertificateEntry("ricetta-dpcm-dem-cert", dpcmCertificate);
 

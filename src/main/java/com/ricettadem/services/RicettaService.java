@@ -24,8 +24,6 @@ public class RicettaService {
 
     private static final String ESITO_OK = "0000";
 
-    private static final String ESITO_KO_BLOCCANTE = "9999";
-
     @Value("${csv.delimiter}")
     private String delimiter;
 
@@ -64,13 +62,12 @@ public class RicettaService {
         logger.info("RicettaDpcm retrieved from file: " + ricetta.toString());
 
         logger.info("Creating the soap request...");
-        InvioPrescrittoRichiesta request = soapSpringClientComponent.createInvioPrescrittoRichiesta(ricetta);
+        InvioPrescrittoRichiesta request = soapSpringClientComponent.createInvioPrescrittoRichiesta(ricetta, region);
         logger.info("Soap request successfully created");
 
         InvioPrescrittoRicevuta response = null;
         if(region != null && region.equalsIgnoreCase("sicilia")){
             logger.info("Performing the soap request for Sicilia...");
-//            webServiceTemplateInvioPrescritto.setMessageSender(httpComponentsMessageSender2);
         } else{
             logger.info("Performing the soap request...");
         }
