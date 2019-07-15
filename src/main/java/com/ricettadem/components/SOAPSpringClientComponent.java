@@ -33,7 +33,7 @@ public class SOAPSpringClientComponent {
     public InvioPrescrittoRichiesta createInvioPrescrittoRichiesta(Ricetta ricetta, String region) throws Exception{
         InvioPrescrittoRichiesta request = new InvioPrescrittoRichiesta();
         if(region != null && region.equalsIgnoreCase(REGIONE_SICILIA)){
-            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getPincode(), sacCertificateFilePath));
+            request.setPinCode(EncryptDecryptHelper.encrypt("1234567890", sacCertificateFilePath));
         } else{
             request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getPincode(), certificateFilePath));
         }
