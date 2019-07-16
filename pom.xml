@@ -99,7 +99,20 @@
                             </schemaIncludes>
                         </configuration>
                     </execution>
-
+                    <execution>
+                        <id>generate-certificati-malattia</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatePackage>com.ricettadem.soap.certificatiMalattia</generatePackage>
+                            <generateDirectory>${project.basedir}/src/main/java</generateDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/resources/wsdl/certificatiMalattia</schemaDirectory>
+                            <schemaIncludes>
+                                <include>*.wsdl</include>
+                            </schemaIncludes>
+                        </configuration>
+                    </execution>
 
                     <!--
                     <execution>

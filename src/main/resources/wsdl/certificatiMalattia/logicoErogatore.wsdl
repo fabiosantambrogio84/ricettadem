@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://ws.cert.sanita.finanze.it/" xmlns:ws="http://ws.cert.sanita.finanze.it/" xmlns:cert="http://cert.sanita.finanze.it/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <documentation>Versione 2.0</documentation>
+    <types>
+        <xsd:schema>
+            <xsd:import namespace="http://cert.sanita.finanze.it/" schemaLocation="definitorio.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="InvioMalattiaRequest">
+        <part name="InvioMalattiaRequest" element="cert:invioMalattiaRequest"/>
+    </message>
+    <message name="InvioMalattiaResponse">
+        <part name="InvioMalattiaResponse" element="cert:invioMalattiaResponse"/>
+    </message>
+    <message name="RettificaMalattiaRequest">
+        <part name="RettificaMalattiaRequest" element="cert:rettificaMalattiaRequest"/>
+    </message>
+    <message name="RettificaMalattiaResponse">
+        <part name="RettificaMalattiaResponse" element="cert:rettificaMalattiaResponse"/>
+    </message>
+    <message name="AnnullamentoMalattiaRequest">
+        <part name="AnnullamentoMalattiaRequest" element="cert:annullamentoMalattiaRequest"/>
+    </message>
+    <message name="AnnullamentoMalattiaResponse">
+        <part name="AnnullamentoMalattiaResponse" element="cert:annullamentoMalattiaResponse"/>
+    </message>
+    <message name="RicercaMalattiaRequest">
+        <part name="RicercaMalattiaRequest" element="cert:ricercaMalattiaRequest"/>
+    </message>
+    <message name="RicercaMalattiaResponse">
+        <part name="RicercaMalattiaResponse" element="cert:ricercaMalattiaResponse"/>
+    </message>
+    <message name="RistampaMalattiaRequest">
+        <part name="RistampaMalattiaRequest" element="cert:ristampaMalattiaRequest"/>
+    </message>
+    <message name="RistampaMalattiaResponse">
+        <part name="RistampaMalattiaResponse" element="cert:ristampaMalattiaResponse"/>
+    </message>
+    <message name="InvioRicoveroRequest">
+        <part name="InvioRicoveroRequest" element="cert:invioRicoveroRequest"/>
+    </message>
+    <message name="InvioRicoveroResponse">
+        <part name="InvioRicoveroResponse" element="cert:invioRicoveroResponse"/>
+    </message>
+    <message name="AnnullamentoRicoveroRequest">
+        <part name="AnnullamentoRicoveroRequest" element="cert:annullamentoRicoveroRequest"/>
+    </message>
+    <message name="AnnullamentoRicoveroResponse">
+        <part name="AnnullamentoRicoveroResponse" element="cert:annullamentoRicoveroResponse"/>
+    </message>
+    <message name="InvioDimissioneRequest">
+        <part name="InvioDimissioneRequest" element="cert:invioDimissioneRequest"/>
+    </message>
+    <message name="InvioDimissioneResponse">
+        <part name="InvioDimissioneResponse" element="cert:invioDimissioneResponse"/>
+    </message>
+    <message name="RettificaDimissioneRequest">
+        <part name="RettificaDimissioneRequest" element="cert:rettificaDimissioneRequest"/>
+    </message>
+    <message name="RettificaDimissioneResponse">
+        <part name="RettificaDimissioneResponse" element="cert:rettificaDimissioneResponse"/>
+    </message>
+    <message name="InterrogazioneLavoratoreRequest">
+        <part name="InterrogazioneLavoratoreRequest" element="cert:interrogazioneLavoratoreRequest"/>
+    </message>
+    <message name="InterrogazioneLavoratoreResponse">
+        <part name="InterrogazioneLavoratoreResponse" element="cert:interrogazioneLavoratoreResponse"/>
+    </message>
+    <portType name="CertificatiMedici">
+        <operation name="InviaMalattia">
+            <input message="ws:InvioMalattiaRequest"/>
+            <output message="ws:InvioMalattiaResponse"/>
+        </operation>
+        <operation name="RettificaMalattia">
+            <input message="ws:RettificaMalattiaRequest"/>
+            <output message="ws:RettificaMalattiaResponse"/>
+        </operation>
+        <operation name="AnnullaMalattia">
+            <input message="ws:AnnullamentoMalattiaRequest"/>
+            <output message="ws:AnnullamentoMalattiaResponse"/>
+        </operation>
+        <operation name="RicercaMalattia">
+            <input message="ws:RicercaMalattiaRequest"/>
+            <output message="ws:RicercaMalattiaResponse"/>
+        </operation>
+        <operation name="RistampaMalattia">
+            <input message="ws:RistampaMalattiaRequest"/>
+            <output message="ws:RistampaMalattiaResponse"/>
+        </operation>
+        <operation name="InviaRicovero">
+            <input message="ws:InvioRicoveroRequest"/>
+            <output message="ws:InvioRicoveroResponse"/>
+        </operation>
+        <operation name="AnnullaRicovero">
+            <input message="ws:AnnullamentoRicoveroRequest"/>
+            <output message="ws:AnnullamentoRicoveroResponse"/>
+        </operation>
+        <operation name="InviaDimissione">
+            <input message="ws:InvioDimissioneRequest"/>
+            <output message="ws:InvioDimissioneResponse"/>
+        </operation>
+        <operation name="RettificaDimissione">
+            <input message="ws:RettificaDimissioneRequest"/>
+            <output message="ws:RettificaDimissioneResponse"/>
+        </operation>
+        <operation name="InterrogazioneLavoratore">
+            <input message="ws:InterrogazioneLavoratoreRequest"/>
+            <output message="ws:InterrogazioneLavoratoreResponse"/>
+        </operation>
+    </portType>
+</definitions>

@@ -5,7 +5,9 @@ import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
+import com.ricettadem.model.certificatiMalattia.CertificatoMalattia;
 import com.ricettadem.soap.annullaPrescritto.AnnullaPrescrittoRichiesta;
+import com.ricettadem.soap.certificatiMalattia.*;
 import com.ricettadem.soap.invioPrescritto.DettaglioPrescrizioneType;
 import com.ricettadem.soap.invioPrescritto.ElencoDettagliPrescrizioniType;
 import com.ricettadem.soap.invioPrescritto.InvioPrescrittoRichiesta;
@@ -33,7 +35,7 @@ public class SOAPSpringClientComponent {
     public InvioPrescrittoRichiesta createInvioPrescrittoRichiesta(Ricetta ricetta, String region) throws Exception{
         InvioPrescrittoRichiesta request = new InvioPrescrittoRichiesta();
         if(region != null && region.equalsIgnoreCase(REGIONE_SICILIA)){
-            request.setPinCode(EncryptDecryptHelper.encrypt("1234567890", sacCertificateFilePath));
+            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getPincode(), sacCertificateFilePath));
         } else{
             request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getPincode(), certificateFilePath));
         }
@@ -48,9 +50,9 @@ public class SOAPSpringClientComponent {
         request.setNre(ricetta.getNre());
         request.setTipoRic(ricetta.getTipoRicetta());
         if(region != null && region.equalsIgnoreCase(REGIONE_SICILIA)){
-            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), sacCertificateFilePath));
+            request.setCodiceAss(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), sacCertificateFilePath));
         } else{
-            request.setPinCode(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), certificateFilePath));
+            request.setCodiceAss(EncryptDecryptHelper.encrypt(ricetta.getCodiceAssistito(), certificateFilePath));
         }
         request.setCognNome(ricetta.getCognomeAssistito());
         request.setIndirizzo(ricetta.getIndirizzoAssistito());
@@ -129,5 +131,61 @@ public class SOAPSpringClientComponent {
 
         return request;
     }
-    
+
+    public InvioMalattiaRequest createCertificatoMalattiaRichiesta(CertificatoMalattia certificatoMalattia) throws Exception{
+        InvioMalattiaRequest request = new InvioMalattiaRequest();
+
+        Lavoratore lavoratore = new Lavoratore();
+        lavoratore.setCodiceFiscale(certificatoMalattia.getLavoratore().getCodiceFiscale());
+
+        Redattore medico = new Redattore();
+        medico.setCodiceAsl(certificatoMalattia.getMedico().getCodiceAsl());
+        medico.setCodiceRegione(certificatoMalattia.getMedico().getCodiceRegione());
+        medico.setCodiceStruttura(certificatoMalattia.getMedico().getCodiceStruttura());
+        medico.setCodiceFiscale(certificatoMalattia.getMedico().getCodiceFiscale());
+        medico.setPincode(EncryptDecryptHelper.encrypt(certificatoMalattia.getMedico().getPincode(), sacCertificateFilePath));
+
+        Indirizzo residenza = new Indirizzo();
+        residenza.setVia(certificatoMalattia.getResidenza().getVia());
+        residenza.setComune(certificatoMalattia.getResidenza().getComune());
+        residenza.setCivico(certificatoMalattia.getResidenza().getCivico());
+        residenza.setCap(certificatoMalattia.getResidenza().getCap());
+        residenza.setProvincia(certificatoMalattia.getResidenza().getProvincia());
+        residenza.setCodiceCatastale(certificatoMalattia.getResidenza().getCodiceCatastale());
+
+        Reperibilita reperibilita = new Reperibilita();
+        reperibilita.setCognome(certificatoMalattia.getReperibilita().getCognome());
+        Indirizzo reperibilitaIndirizzo = new Indirizzo();
+        reperibilitaIndirizzo.setVia(certificatoMalattia.getReperibilita().getIndirizzo().getVia());
+        reperibilitaIndirizzo.setComune(certificatoMalattia.getReperibilita().getIndirizzo().getComune());
+        reperibilitaIndirizzo.setCivico(certificatoMalattia.getReperibilita().getIndirizzo().getCivico());
+        reperibilitaIndirizzo.setCap(certificatoMalattia.getReperibilita().getIndirizzo().getCap());
+        reperibilitaIndirizzo.setProvincia(certificatoMalattia.getReperibilita().getIndirizzo().getProvincia());
+        reperibilitaIndirizzo.setCodiceCatastale(certificatoMalattia.getReperibilita().getIndirizzo().getCodiceCatastale());
+        reperibilita.setIndirizzo(reperibilitaIndirizzo);
+
+        Malattia malattia = new Malattia();
+        malattia.setRuoloMedico(certificatoMalattia.getMalattia().getRuoloMedico());
+        malattia.setDataRilascio(certificatoMalattia.getMalattia().getDataRilascio());
+        malattia.setDataInizio(certificatoMalattia.getMalattia().getDataInizio());
+        malattia.setDataFine(certificatoMalattia.getMalattia().getDataFine());
+        malattia.setVisita(certificatoMalattia.getMalattia().getVisita());
+        malattia.setTipoCertificato(certificatoMalattia.getMalattia().getTipoCertificato());
+        Diagnosi diagnosi = new Diagnosi();
+        diagnosi.setCodiceDiagnosi(certificatoMalattia.getMalattia().getDiagnosi().getCodiceDiagnosi());
+        diagnosi.setNoteDiagnosi(certificatoMalattia.getMalattia().getDiagnosi().getNoteDiagnosi());
+        malattia.setDiagnosi(diagnosi);
+        malattia.setGiornataLavorata(certificatoMalattia.getMalattia().getGiornataLavorata());
+        malattia.setTrauma(certificatoMalattia.getMalattia().getTrauma());
+        malattia.setAgevolazioni(certificatoMalattia.getMalattia().getAgevolazioni());
+
+        request.setLavoratore(lavoratore);
+        request.setMedico(medico);
+        request.setResidenza(residenza);
+        request.setReperibilita(reperibilita);
+        request.setMalattia(malattia);
+
+        return request;
+    }
+
 }

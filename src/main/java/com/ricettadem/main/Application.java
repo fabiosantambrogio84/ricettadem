@@ -3,6 +3,7 @@ package com.ricettadem.main;
 import com.ricettadem.services.AnnullaRicettaService;
 import com.ricettadem.services.RicettaService;
 import com.ricettadem.services.RichiestaLottiNreService;
+import com.ricettadem.services.certificatiMalattia.CertificatoMalattiaService;
 import com.ricettadem.services.dpcm.RicettaMirService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class Application {
 
     @Autowired
     private RicettaMirService ricettaMirService;
+
+    @Autowired
+    private CertificatoMalattiaService certificatoMalattiaService;
 
     public static void main(String[] args) throws Exception{
         logger.info("Application start");
@@ -85,6 +89,13 @@ public class Application {
                 ricettaMirService.invia();
             } catch(Exception e){
                 logger.error("Error during execution of 'invio-ricetta-dpcm'", e);
+                throw e;
+            }
+        } else if(type.toLowerCase().equals("invio-certificato-malattia")){
+            try{
+                certificatoMalattiaService.invia();
+            } catch(Exception e){
+                logger.error("Error during execution of 'invio-certificato-malattia'", e);
                 throw e;
             }
         }

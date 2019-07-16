@@ -34,13 +34,8 @@ public class SoapClientConfiguration {
 
     private static Logger logger = LoggerFactory.getLogger(SoapClientConfiguration.class);
 
-//    private static final String REGIONE_SICILIA = "sicilia";
-
     @Value("${ws.credentials.file-path}")
     private String credentialsFilePath;
-
-//    @Value("${ws.sicilia.credentials.file-path}")
-//    private String siciliaCredentialsFilePath;
 
     @Value("${certificate.file-path}")
     private String certificateFilePath;
@@ -72,6 +67,13 @@ public class SoapClientConfiguration {
     Jaxb2Marshaller jaxb2MarshallerRichiestaLottiNre() {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
         jaxb2Marshaller.setContextPath("com.ricettadem.soap.richiestaLottiNre");
+        return jaxb2Marshaller;
+    }
+
+    @Bean
+    Jaxb2Marshaller jaxb2MarshallerCertificatoMalattia() {
+        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+        jaxb2Marshaller.setContextPath("com.ricettadem.soap.certificatiMalattia");
         return jaxb2Marshaller;
     }
 
@@ -132,6 +134,20 @@ public class SoapClientConfiguration {
     }
 
     @Bean
+    public WebServiceTemplate webServiceTemplateCertificatiMalattia() throws Exception {
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
+        webServiceTemplate.setMarshaller(jaxb2MarshallerCertificatoMalattia());
+        webServiceTemplate.setUnmarshaller(jaxb2MarshallerCertificatoMalattia());
+        ClientInterceptor[] interceptors =
+                new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
+        webServiceTemplate.setInterceptors(interceptors);
+
+        // set a HttpComponentsMessageSender which provides support for basic authentication
+        webServiceTemplate.setMessageSender(httpComponentsMessageSender2());
+        return webServiceTemplate;
+    }
+
+    @Bean
     public HttpComponentsMessageSender httpComponentsMessageSender() throws Exception {
         HttpComponentsMessageSender httpComponentsMessageSender = new HttpComponentsMessageSender();
         httpComponentsMessageSender.setConnectionTimeout(60000);
@@ -141,16 +157,15 @@ public class SoapClientConfiguration {
         return httpComponentsMessageSender;
     }
 
-//    @Bean
-//    public HttpComponentsMessageSender httpComponentsMessageSender2() throws Exception {
-//        HttpComponentsMessageSender httpComponentsMessageSender = new HttpComponentsMessageSender();
-//        httpComponentsMessageSender.setConnectionTimeout(60000);
-//        httpComponentsMessageSender.setReadTimeout(60000);
-//        httpComponentsMessageSender.setHttpClient(httpClient2());
-//
-//        return httpComponentsMessageSender;
-//    }
+    @Bean
+    public HttpComponentsMessageSender httpComponentsMessageSender2() throws Exception {
+        HttpComponentsMessageSender httpComponentsMessageSender = new HttpComponentsMessageSender();
+        httpComponentsMessageSender.setConnectionTimeout(60000);
+        httpComponentsMessageSender.setReadTimeout(60000);
+        httpComponentsMessageSender.setHttpClient(httpClient2());
 
+        return httpComponentsMessageSender;
+    }
 
     public HttpClient httpClient() throws Exception {
         Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
@@ -164,17 +179,17 @@ public class SoapClientConfiguration {
                 .build();
     }
 
-//    public HttpClient httpClient2() throws Exception {
-//        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials(REGIONE_SICILIA));
-//        List<Header> headers = new ArrayList<>();
-//        headers.add(header);
-//
-//        return HttpClientBuilder.create()
-//                .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
-//                .setSSLSocketFactory(sslConnectionSocketFactory())
-//                .setDefaultHeaders(headers)
-//                .build();
-//    }
+    public HttpClient httpClient2() throws Exception {
+        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
+        List<Header> headers = new ArrayList<>();
+        headers.add(header);
+
+        return HttpClientBuilder.create()
+                .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
+                .setSSLSocketFactory(sslConnectionSocketFactory())
+                .setDefaultHeaders(headers)
+                .build();
+    }
 
     public SSLConnectionSocketFactory sslConnectionSocketFactory() throws Exception {
         // NoopHostnameVerifier essentially turns hostname verification off as otherwise following error
@@ -234,7 +249,7 @@ public class SoapClientConfiguration {
             }
         }
 
-        return SSLContextBuilder.create()
+        return SSLContextBuilder.create().setProtocol("TLSv1.2")
                 .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
     }
 

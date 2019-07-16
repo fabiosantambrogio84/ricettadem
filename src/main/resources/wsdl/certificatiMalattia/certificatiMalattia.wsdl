@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://ws.cert.sanita.finanze.it/" xmlns:ws="http://ws.cert.sanita.finanze.it/" xmlns:cert="http://cert.sanita.finanze.it/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <documentation>Versione 2.0</documentation>
+    <import namespace="http://ws.cert.sanita.finanze.it/" location="logicoErogatore.wsdl"/>
+    <binding name="CertificatiMedici" type="ws:CertificatiMedici">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="InviaMalattia">
+            <soap:operation soapAction="http://ws.cert.sanita.finanze.it/InviaMalattia"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="AnnullaMalattia">
+            <soap:operation soapAction="http://ws.cert.sanita.finanze.it/AnnullaMalattia"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="RettificaMalattia">
+            <soap:operation soapAction="http://ws.cert.sanita.finanze.it/RettificaMalattia"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="RicercaMalattia">
+    <soap:operation soapAction="http://ws.cert.sanita.finanze.it/RicercaMalattia"/>
+    <input>
+        <soap:body use="literal"/>
+    </input>
+    <output>
+        <soap:body use="literal"/>
+    </output>
+</operation>
+<operation name="RistampaMalattia">
+<soap:operation soapAction="http://ws.cert.sanita.finanze.it/RistampaMalattia"/>
+<input>
+    <soap:body use="literal"/>
+</input>
+<output>
+    <soap:body use="literal"/>
+</output>
+</operation>
+<operation name="InviaRicovero">
+<soap:operation soapAction="http://ws.cert.sanita.finanze.it/InviaRicovero"/>
+<input>
+    <soap:body use="literal"/>
+</input>
+<output>
+    <soap:body use="literal"/>
+</output>
+</operation>
+<operation name="AnnullaRicovero">
+<soap:operation soapAction="http://ws.cert.sanita.finanze.it/AnnullaRicovero"/>
+<input>
+    <soap:body use="literal"/>
+</input>
+<output>
+    <soap:body use="literal"/>
+</output>
+</operation>
+<operation name="InviaDimissione">
+<soap:operation soapAction="http://ws.cert.sanita.finanze.it/InviaDimissione"/>
+<input>
+    <soap:body use="literal"/>
+</input>
+<output>
+    <soap:body use="literal"/>
+</output>
+</operation>
+<operation name="RettificaDimissione">
+<soap:operation soapAction="http://ws.cert.sanita.finanze.it/RettificaDimissione"/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+        </operation>
+<operation name="InterrogazioneLavoratore">
+<soap:operation soapAction="http://ws.cert.sanita.finanze.it/InterrogazioneLavoratore"/>
+<input>
+    <soap:body use="literal"/>
+</input>
+<output>
+    <soap:body use="literal"/>
+</output>
+</operation>
+        </binding>
+<service name="CertificatiMedici">
+<port name="CertificatiMedici" binding="ws:CertificatiMedici">
+    <soap:address location="https://certservicetest.sanita.finanze.it"/>
+</port>
+</service>
+        </definitions>

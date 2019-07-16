@@ -4,6 +4,7 @@ import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
+import com.ricettadem.model.certificatiMalattia.*;
 import com.ricettadem.model.dpcm.Prescrizione;
 import com.ricettadem.model.dpcm.RicettaDpcm;
 import com.ricettadem.model.dpcm.RicettaMir;
@@ -364,4 +365,104 @@ public class CsvHelper {
 
         return ricettaDpcm;
     }
+
+    public static CertificatoMalattia readCertificatoMalattiaCsv(String filePath, String delimiter, Integer certificatoMalattiaNumCampi, Integer certificatoMalattiaInizioLettura) throws Exception{
+        CertificatoMalattia certificatoMalattia = null;
+
+        File path = new File(filePath);
+
+        logger.info("Processing file '" + filePath + "'");
+
+        List<List<String>> allValues = new ArrayList<>();
+
+        if(path.exists()) {
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+                while ((line = br.readLine()) != null) {
+                    String[] values = line.split(delimiter, -1);
+                    allValues.add(Arrays.asList(values));
+                }
+
+            } catch (IOException e) {
+                logger.error("Error reading file", e);
+                throw e;
+            }
+        }
+        if(!allValues.isEmpty()){
+            List<String> values = allValues.get(0);
+            if(!values.isEmpty()){
+                logger.info("The file contains " + values.size() + " elements");
+                if(values.size() < certificatoMalattiaNumCampi){
+                    throw new RuntimeException("Il file in ingresso non contiene tutti i campi necessari per creare il certificato malattia");
+                } else{
+                    // Creo il redattore
+                    Redattore medico = new Redattore();
+                    medico.setPincode(values.get(certificatoMalattiaInizioLettura));
+                    medico.setCodiceRegione(values.get(certificatoMalattiaInizioLettura + 1));
+                    medico.setCodiceAsl(values.get(certificatoMalattiaInizioLettura + 2));
+
+                    // Creo il lavoratore
+                    Lavoratore lavoratore = new Lavoratore();
+                    lavoratore.setCodiceFiscale(values.get(certificatoMalattiaInizioLettura + 3));
+
+                    // Creo la residenza
+                    Indirizzo residenza = new Indirizzo();
+                    residenza.setVia(values.get(certificatoMalattiaInizioLettura + 4));
+                    residenza.setCivico(values.get(certificatoMalattiaInizioLettura + 5));
+                    residenza.setCap(values.get(certificatoMalattiaInizioLettura + 6));
+                    residenza.setComune(values.get(certificatoMalattiaInizioLettura + 7));
+                    residenza.setProvincia(values.get(certificatoMalattiaInizioLettura + 8));
+
+                    // Creo la reperibilita
+                    Reperibilita reperibilita = new Reperibilita();
+                    reperibilita.setCognome(values.get(certificatoMalattiaInizioLettura + 9));
+                    Indirizzo reperibilitaIndirizzo = new Indirizzo();
+                    reperibilitaIndirizzo.setVia(values.get(certificatoMalattiaInizioLettura + 10));
+                    reperibilitaIndirizzo.setCivico(values.get(certificatoMalattiaInizioLettura + 11));
+                    reperibilitaIndirizzo.setCap(values.get(certificatoMalattiaInizioLettura + 12));
+                    reperibilitaIndirizzo.setComune(values.get(certificatoMalattiaInizioLettura + 13));
+                    reperibilitaIndirizzo.setProvincia(values.get(certificatoMalattiaInizioLettura + 14));
+                    reperibilitaIndirizzo.setCodiceCatastale(values.get(certificatoMalattiaInizioLettura + 15));
+                    reperibilita.setIndirizzo(reperibilitaIndirizzo);
+
+                    // Creo la malattia
+                    Malattia malattia = new Malattia();
+                    malattia.setRuoloMedico(values.get(certificatoMalattiaInizioLettura + 16));
+                    malattia.setDataRilascio(values.get(certificatoMalattiaInizioLettura + 17));
+                    malattia.setDataInizio(values.get(certificatoMalattiaInizioLettura + 18));
+                    malattia.setDataFine(values.get(certificatoMalattiaInizioLettura + 19));
+                    malattia.setVisita(values.get(certificatoMalattiaInizioLettura + 20));
+                    malattia.setTipoCertificato(values.get(certificatoMalattiaInizioLettura + 21));
+                    Diagnosi diagnosi = new Diagnosi();
+                    diagnosi.setCodiceDiagnosi(values.get(certificatoMalattiaInizioLettura + 22));
+                    diagnosi.setNoteDiagnosi(values.get(certificatoMalattiaInizioLettura + 23));
+                    malattia.setDiagnosi(diagnosi);
+                    malattia.setGiornataLavorata(values.get(certificatoMalattiaInizioLettura + 24));
+                    malattia.setTrauma(values.get(certificatoMalattiaInizioLettura + 25));
+                    try{
+                        malattia.setAgevolazioni(values.get(certificatoMalattiaInizioLettura + 26));
+                    } catch(Exception e){
+                        logger.info("Ultimo campo (agevolazioni) vuoto");
+                    }
+                    // Popolo il certificato malattia
+                    certificatoMalattia = new CertificatoMalattia();
+                    certificatoMalattia.setMedico(medico);
+                    certificatoMalattia.setLavoratore(lavoratore);
+                    certificatoMalattia.setResidenza(residenza);
+                    certificatoMalattia.setReperibilita(reperibilita);
+                    certificatoMalattia.setMalattia(malattia);
+
+                    logger.info("Certificato malattia successfully created: " + certificatoMalattia.toString());
+                }
+            } else{
+                throw new RuntimeException("Il file in ingresso è vuoto");
+            }
+        } else{
+            throw new RuntimeException("Il file in ingresso è vuoto");
+        }
+
+        return certificatoMalattia;
+    }
+
+
 }
