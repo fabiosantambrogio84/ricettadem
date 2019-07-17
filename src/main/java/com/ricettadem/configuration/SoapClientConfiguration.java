@@ -6,9 +6,11 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,7 @@ import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.net.ssl.SSLContext;
+import javax.security.cert.CertificateException;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.security.KeyStore;
@@ -181,6 +184,7 @@ public class SoapClientConfiguration {
 
     public HttpClient httpClient2() throws Exception {
         Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
+        logger.info(header.toString());
         List<Header> headers = new ArrayList<>();
         headers.add(header);
 
@@ -249,8 +253,18 @@ public class SoapClientConfiguration {
             }
         }
 
-        return SSLContextBuilder.create().setProtocol("TLSv1.2")
-                .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
+        //return SSLContextBuilder.create().setProtocol("TLSv1.2")
+        //        .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
+
+        SSLContextBuilder builder = SSLContexts.custom();
+        builder.loadTrustMaterial(null, new TrustStrategy() {
+            @Override
+            public boolean isTrusted(X509Certificate[] chain, String authType) {
+                return true;
+            }
+        });
+        builder.setProtocol("TLSv1.2");
+        return builder.build();
     }
 
     private String createCredentials() throws Exception{
