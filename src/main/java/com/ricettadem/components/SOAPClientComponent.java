@@ -161,7 +161,7 @@ public class SOAPClientComponent {
         }
     }
 
-    private static class TrustAllCertificates implements X509TrustManager {
+    public static class TrustAllCertificates implements X509TrustManager {
         public void checkClientTrusted(X509Certificate[] certs, String authType) {
         }
 

@@ -1,5 +1,6 @@
 package com.ricettadem.configuration;
 
+import com.ricettadem.components.SOAPClientComponent;
 import com.ricettadem.interceptors.LogHttpHeaderClientInterceptor;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -22,6 +23,7 @@ import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.security.cert.CertificateException;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -253,9 +255,14 @@ public class SoapClientConfiguration {
             }
         }
 
-        //return SSLContextBuilder.create().setProtocol("TLSv1.2")
-        //        .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
+        return SSLContextBuilder.create().setProtocol("TLSv1.2")
+                .loadTrustMaterial(trustStore, trustStorePassword.toCharArray()).build();
 
+        //SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+        //TrustManager[] trustAll = new TrustManager[] {new SOAPClientComponent.TrustAllCertificates()};
+        //sslContext.init(null, trustAll, new java.security.SecureRandom());
+
+        /*
         SSLContextBuilder builder = SSLContexts.custom();
         builder.loadTrustMaterial(null, new TrustStrategy() {
             @Override
@@ -263,8 +270,10 @@ public class SoapClientConfiguration {
                 return true;
             }
         });
-        builder.setProtocol("TLSv1.2");
+        builder.setProvider("TLSv1.2").setProtocol("TLSv1.2");
         return builder.build();
+        */
+        //return sslContext;
     }
 
     private String createCredentials() throws Exception{
