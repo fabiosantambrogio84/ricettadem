@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -166,17 +168,32 @@ public class SOAPSpringClientComponent {
 
         Malattia malattia = new Malattia();
         malattia.setRuoloMedico(certificatoMalattia.getMalattia().getRuoloMedico());
-        malattia.setDataRilascio(certificatoMalattia.getMalattia().getDataRilascio());
-        malattia.setDataInizio(certificatoMalattia.getMalattia().getDataInizio());
-        malattia.setDataFine(certificatoMalattia.getMalattia().getDataFine());
+        String dataRilascio = certificatoMalattia.getMalattia().getDataRilascio();
+        String dataInizio = certificatoMalattia.getMalattia().getDataInizio();
+        String dataFine = certificatoMalattia.getMalattia().getDataFine();
+
+        malattia.setDataRilascio(formatDateString(dataRilascio));
+        malattia.setDataInizio(formatDateString(dataInizio));
+        malattia.setDataFine(formatDateString(dataFine));
+
         malattia.setVisita(certificatoMalattia.getMalattia().getVisita());
         malattia.setTipoCertificato(certificatoMalattia.getMalattia().getTipoCertificato());
         Diagnosi diagnosi = new Diagnosi();
         diagnosi.setCodiceDiagnosi(certificatoMalattia.getMalattia().getDiagnosi().getCodiceDiagnosi());
         diagnosi.setNoteDiagnosi(certificatoMalattia.getMalattia().getDiagnosi().getNoteDiagnosi());
         malattia.setDiagnosi(diagnosi);
-        malattia.setGiornataLavorata(certificatoMalattia.getMalattia().getGiornataLavorata());
-        malattia.setTrauma(certificatoMalattia.getMalattia().getTrauma());
+        String giornataLavorata = certificatoMalattia.getMalattia().getGiornataLavorata();
+        if(giornataLavorata != null && giornataLavorata.equals("1")){
+            malattia.setGiornataLavorata("true");
+        } else{
+            malattia.setGiornataLavorata("false");
+        }
+        String trauma = certificatoMalattia.getMalattia().getTrauma();
+        if(trauma != null && trauma.equals("1")){
+            malattia.setTrauma("true");
+        } else {
+            malattia.setTrauma("false");
+        }
         malattia.setAgevolazioni(certificatoMalattia.getMalattia().getAgevolazioni());
 
         request.setLavoratore(lavoratore);
@@ -186,6 +203,19 @@ public class SOAPSpringClientComponent {
         request.setMalattia(malattia);
 
         return request;
+    }
+
+    private String formatDateString(String dateString){
+        String result = dateString;
+        try{
+            Date date1 = new SimpleDateFormat("yyyyMMdd").parse(dateString);
+
+            result = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+
+        } catch(Exception e){
+            logger.error("Error parsing date '" + dateString + "'");
+        }
+        return result;
     }
 
 }
