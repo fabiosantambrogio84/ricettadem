@@ -1,17 +1,14 @@
 package com.ricettadem.configuration;
 
-import com.ricettadem.components.SOAPClientComponent;
 import com.ricettadem.interceptors.LogHttpHeaderClientInterceptor;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,8 +20,6 @@ import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.security.cert.CertificateException;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.security.KeyStore;
@@ -96,20 +91,6 @@ public class SoapClientConfiguration {
         return webServiceTemplate;
     }
 
-//    @Bean
-//    public WebServiceTemplate webServiceTemplateInvioPrescrittoSicilia() throws Exception {
-//        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
-//        webServiceTemplate.setMarshaller(jaxb2MarshallerInvioPrescritto());
-//        webServiceTemplate.setUnmarshaller(jaxb2MarshallerInvioPrescritto());
-//        ClientInterceptor[] interceptors =
-//                new ClientInterceptor[]{new LogHttpHeaderClientInterceptor()};
-//        webServiceTemplate.setInterceptors(interceptors);
-//
-//        // set a HttpComponentsMessageSender which provides support for basic authentication
-//        webServiceTemplate.setMessageSender(httpComponentsMessageSender2());
-//        return webServiceTemplate;
-//    }
-
     @Bean
     public WebServiceTemplate webServiceTemplateAnnullaPrescritto() throws Exception {
         WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
@@ -173,7 +154,7 @@ public class SoapClientConfiguration {
     }
 
     public HttpClient httpClient() throws Exception {
-        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
+        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials(credentialsFilePath));
         List<Header> headers = new ArrayList<>();
         headers.add(header);
 
@@ -185,7 +166,7 @@ public class SoapClientConfiguration {
     }
 
     public HttpClient httpClient2() throws Exception {
-        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials());
+        Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + createCredentials(credentialsFilePath));
         logger.info(header.toString());
         List<Header> headers = new ArrayList<>();
         headers.add(header);
@@ -276,7 +257,7 @@ public class SoapClientConfiguration {
         //return sslContext;
     }
 
-    private String createCredentials() throws Exception{
+    private String createCredentials(String filePath) throws Exception{
         logger.info("Reading credentials...");
 
         String base64Credentials = "";
@@ -284,7 +265,7 @@ public class SoapClientConfiguration {
         List<String> list = new ArrayList<>();
 
         String line = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(credentialsFilePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
             while ((line = br.readLine()) != null) {
                 list.add(line);

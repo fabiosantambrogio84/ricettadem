@@ -138,7 +138,7 @@ public class SOAPSpringClientComponent {
         InvioMalattiaRequest request = new InvioMalattiaRequest();
 
         Lavoratore lavoratore = new Lavoratore();
-        lavoratore.setCodiceFiscale(certificatoMalattia.getLavoratore().getCodiceFiscale());
+        lavoratore.setCodiceFiscale(EncryptDecryptHelper.encrypt(certificatoMalattia.getLavoratore().getCodiceFiscale(), sacCertificateFilePath));
 
         Redattore medico = new Redattore();
         medico.setCodiceAsl(certificatoMalattia.getMedico().getCodiceAsl());
@@ -163,7 +163,11 @@ public class SOAPSpringClientComponent {
         reperibilitaIndirizzo.setCivico(certificatoMalattia.getReperibilita().getIndirizzo().getCivico());
         reperibilitaIndirizzo.setCap(certificatoMalattia.getReperibilita().getIndirizzo().getCap());
         reperibilitaIndirizzo.setProvincia(certificatoMalattia.getReperibilita().getIndirizzo().getProvincia());
-        reperibilitaIndirizzo.setCodiceCatastale(certificatoMalattia.getReperibilita().getIndirizzo().getCodiceCatastale());
+
+        String codiceCatastale = certificatoMalattia.getReperibilita().getIndirizzo().getCodiceCatastale();
+        if(codiceCatastale != null && !codiceCatastale.equals("")){
+            reperibilitaIndirizzo.setCodiceCatastale(codiceCatastale);
+        }
         reperibilita.setIndirizzo(reperibilitaIndirizzo);
 
         Malattia malattia = new Malattia();
@@ -194,7 +198,10 @@ public class SOAPSpringClientComponent {
         } else {
             malattia.setTrauma("false");
         }
-        malattia.setAgevolazioni(certificatoMalattia.getMalattia().getAgevolazioni());
+        String agevolazioni = certificatoMalattia.getMalattia().getAgevolazioni();
+        if(agevolazioni != null && !agevolazioni.equals("")){
+            malattia.setAgevolazioni(agevolazioni);
+        }
 
         request.setLavoratore(lavoratore);
         request.setMedico(medico);

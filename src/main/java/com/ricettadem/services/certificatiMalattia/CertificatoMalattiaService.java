@@ -4,8 +4,7 @@ import com.ricettadem.components.SOAPSpringClientComponent;
 import com.ricettadem.helper.CsvHelper;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.certificatiMalattia.CertificatoMalattia;
-import com.ricettadem.soap.certificatiMalattia.InvioMalattiaRequest;
-import com.ricettadem.soap.certificatiMalattia.InvioMalattiaResponse;
+import com.ricettadem.soap.certificatiMalattia.*;
 import com.ricettadem.soap.invioPrescritto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,8 @@ import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -74,129 +75,81 @@ public class CertificatoMalattiaService {
         response = (InvioMalattiaResponse)webServiceTemplateCertificatiMalattia.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 
-        /*
-
         logger.info("Creating the response file...");
 
-        String nreOutput = "NRE: " + response.getNre();
-        String codiceAutenticazioneOutput = "Codice Autenticazione: " + response.getCodAutenticazione();
-        String dataInserimentoOutput = "Data Inserimento: " + response.getDataInserimento();
-        String codiceEsitoInserimentoOutput = "Codice Esito Inserimento: " + response.getCodEsitoInserimento();
+        RicevutaNonOk ricevutaNonOk = response.getRicevutaNonOk();
+        RicevutaOkInvioMalattia ricevutaOkInvioMalattia = response.getRicevutaOkInvioMalattia();
+        if(ricevutaNonOk != null){
+            logger.error("Response KO");
 
-        logger.info("Esito operazione: " + response.getCodEsitoInserimento());
+            List<Errore> errori = ricevutaNonOk.getErrore();
 
-        try{
-            if(response.getCodEsitoInserimento() != null){
-                if(response.getCodEsitoInserimento().equals(ESITO_OK)){
-                    logger.info("Creating the response file...");
-                    createRicevutaFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput);
-                    logger.info("Response file successfully created");
-                } else{
-                    logger.info("Creating the response file...");
-                    createRicevutaFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput);
-                    logger.info("Response file successfully created");
+            try{
+                BufferedWriter bw = null;
+                try{
+                    File responseFile = new  File(certificatoMalattiaErrorResponseFilePath);
+                    if(responseFile != null && responseFile.exists()){
+                        responseFile.delete();
+                    }
+                    FileWriter fw = new FileWriter(responseFile, true);
+                    bw = new BufferedWriter(fw);
 
-                    logger.info("Creating the error response file...");
-                    createRicevutaErrorFile(nreOutput, codiceAutenticazioneOutput, dataInserimentoOutput, codiceEsitoInserimentoOutput, response);
-                    logger.info("Error response file successfully created");
+                    for(Errore errore: errori){
+                        logger.error("Tipo errore: " + errore.getTipoErrore());
+                        logger.error("Sezione errata: " + errore.getSezioneErrata());
+                        logger.error("Descrizione: " + errore.getDescrizione());
+
+                        bw.write("Tipo errore: " + errore.getTipoErrore());
+                        bw.newLine();
+                        bw.write("Sezione errata: " + errore.getSezioneErrata());
+                        bw.newLine();
+                        bw.write("Descrizione: " + errore.getDescrizione());
+                        bw.newLine();
+                    }
+                }finally{
+                    bw.close();
                 }
+
+            } catch(Exception e){
+                logger.error("Error creating response file", e);
+                throw e;
             }
 
-        } catch(Exception e){
-            logger.error("Error creating response file", e);
-            throw e;
+        } else if(ricevutaOkInvioMalattia != null){
+            logger.info("Response OK");
+
+            String idCertificato = ricevutaOkInvioMalattia.getIdCertificato();
+            Date date = ricevutaOkInvioMalattia.getDataRicezione().toGregorianCalendar().getTime();
+            String formattedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
+
+            logger.info("Id certificato: "+idCertificato);
+            logger.info("Data ricezione: "+formattedDate);
+
+            try{
+                BufferedWriter bw = null;
+                try{
+                    File responseFile = new  File(certificatoMalattiaResponseFilePath);
+                    if(responseFile != null && responseFile.exists()){
+                        responseFile.delete();
+                    }
+                    FileWriter fw = new FileWriter(responseFile, true);
+                    bw = new BufferedWriter(fw);
+
+                    bw.write("Id certificato: " + idCertificato);
+                    bw.newLine();
+                    bw.write("Data ricezione: " + formattedDate);
+                    bw.newLine();
+                }finally{
+                    bw.close();
+                }
+
+            } catch(Exception e){
+                logger.error("Error creating response file", e);
+                throw e;
+            }
         }
 
         logger.info("Response file successfully created");
-        */
     }
 
-    /*
-    private void createRicevutaFile(String nreOutput, String codiceAutenticazioneOutput, String dataInserimentoOutput, String codiceEsitoInserimentoOutput) throws Exception{
-        BufferedWriter bw = null;
-        try{
-            File responseFile = new  File(ricettaResponseFilePath);
-            if(responseFile != null && responseFile.exists()){
-                responseFile.delete();
-            }
-            FileWriter fw = new FileWriter(responseFile, true);
-            bw = new BufferedWriter(fw);
-
-            bw.write(nreOutput);
-            bw.newLine();
-            bw.write(codiceAutenticazioneOutput);
-            bw.newLine();
-            bw.write(dataInserimentoOutput);
-            bw.newLine();
-            bw.write(codiceEsitoInserimentoOutput);
-            bw.newLine();
-        }finally{
-            bw.close();
-        }
-    }
-
-    private void createRicevutaErrorFile(String nreOutput, String codiceAutenticazioneOutput, String dataInserimentoOutput, String codiceEsitoInserimentoOutput, InvioPrescrittoRicevuta response) throws Exception {
-        BufferedWriter bw = null;
-        try{
-            File errorResponseFile = new  File(ricettaErrorResponseFilePath);
-            if(errorResponseFile != null && errorResponseFile.exists()){
-                errorResponseFile.delete();
-            }
-            FileWriter fw = new FileWriter(errorResponseFile, true);
-            bw = new BufferedWriter(fw);
-
-            bw.write(nreOutput);
-            bw.newLine();
-            bw.write(codiceAutenticazioneOutput);
-            bw.newLine();
-            bw.write(dataInserimentoOutput);
-            bw.newLine();
-            bw.write(codiceEsitoInserimentoOutput);
-            bw.newLine();
-
-            // Errori
-            ElencoErroriRicetteType elencoErroriRicetteType = response.getElencoErroriRicette();
-            if(elencoErroriRicetteType != null){
-                List<ErroreRicettaType> erroriRicettaType = elencoErroriRicetteType.getErroreRicetta();
-                if(erroriRicettaType != null && !erroriRicettaType.isEmpty()){
-                    bw.newLine();
-                    bw.write("Elenco Errori:");
-                    bw.newLine();
-                    for(ErroreRicettaType erroreRicettaType: erroriRicettaType){
-                        bw.write("Errore:");
-                        bw.newLine();
-                        bw.write("Codice Esito: " + erroreRicettaType.getCodEsito());
-                        bw.newLine();
-                        bw.write("Esito: " + erroreRicettaType.getEsito());
-                        bw.newLine();
-                        bw.write("Progr. Presc.: " + erroreRicettaType.getProgPresc());
-                        bw.newLine();
-                        bw.write("Tipo Errore: " + erroreRicettaType.getTipoErrore());
-                        bw.newLine();
-                    }
-                }
-            }
-            // Comunicazioni
-            ElencoComunicazioniType elencoComunicazioniType = response.getElencoComunicazioni();
-            if(elencoComunicazioniType != null){
-                List<ComunicazioneType> comunicazioneTypes = elencoComunicazioniType.getComunicazione();
-                if(comunicazioneTypes != null && !comunicazioneTypes.isEmpty()){
-                    bw.newLine();
-                    bw.write("Elenco Comunicazioni:");
-                    bw.newLine();
-                    for(ComunicazioneType comunicazioneType : comunicazioneTypes){
-                        bw.write("Comunicazione:");
-                        bw.newLine();
-                        bw.write("Codice: " + comunicazioneType.getCodice());
-                        bw.newLine();
-                        bw.write("Messaggio: " + comunicazioneType.getMessaggio());
-                        bw.newLine();
-                    }
-                }
-            }
-        } finally{
-            bw.close();
-        }
-    }
-    */
 }
