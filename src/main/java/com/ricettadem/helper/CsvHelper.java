@@ -105,7 +105,7 @@ public class CsvHelper {
                     List<DettaglioPrescrizione> dettagliPrescrizione = new ArrayList<>();
                     Integer startIndex = ricettaNumCampi;
 
-                    while(startIndex < values.size()){
+                   while(startIndex < values.size()){
                         DettaglioPrescrizione dettaglioPrescrizione = new DettaglioPrescrizione();
                         for(int i=startIndex; i<(startIndex + ricettaPrescrizioneNumCampi + 1);i++){
 //                            logger.info("-> "+startIndex);
@@ -123,15 +123,14 @@ public class CsvHelper {
                             dettaglioPrescrizione.setInformazioniPrescrizione(values.get(startIndex + 11));
                             dettaglioPrescrizione.setInformazioniPrescrizione2(values.get(startIndex + 12));
 
-                            // se il file non è relativo alla regione Sicilia, proseguo con la lettura dei campi
-                            //if(region == null || (region != null && !region.equalsIgnoreCase(REGIONE_SICILIA))){
+                            if(ricettaPrescrizioneNumCampi > (startIndex + 12)){
                                 dettaglioPrescrizione.setCodiceCatalogoPrescrizione(values.get(startIndex + 13));
                                 dettaglioPrescrizione.setTipoAccesso1(values.get(startIndex + 14));
                                 dettaglioPrescrizione.setNumeroNota(values.get(startIndex + 15));
                                 dettaglioPrescrizione.setCondizioneErogabilita(values.get(startIndex + 16));
                                 dettaglioPrescrizione.setAppropriatezzaPrescrittiva(values.get(startIndex + 17));
                                 dettaglioPrescrizione.setPatologia(values.get(startIndex + 18));
-                            //}
+                            }
                         }
                         dettagliPrescrizione.add(dettaglioPrescrizione);
                         startIndex = startIndex + ricettaPrescrizioneNumCampi + 1;
