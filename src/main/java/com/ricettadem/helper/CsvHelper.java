@@ -108,7 +108,6 @@ public class CsvHelper {
                    while(startIndex < values.size()){
                         DettaglioPrescrizione dettaglioPrescrizione = new DettaglioPrescrizione();
                         for(int i=startIndex; i<(startIndex + ricettaPrescrizioneNumCampi + 1);i++){
-//                            logger.info("-> "+startIndex);
                             dettaglioPrescrizione.setCodiceProdotto(values.get(startIndex));
                             dettaglioPrescrizione.setDescrizioneProdotto(values.get(startIndex + 1));
                             dettaglioPrescrizione.setCodiceGruppoEquivalenza(values.get(startIndex + 2));
@@ -123,7 +122,7 @@ public class CsvHelper {
                             dettaglioPrescrizione.setInformazioniPrescrizione(values.get(startIndex + 11));
                             dettaglioPrescrizione.setInformazioniPrescrizione2(values.get(startIndex + 12));
 
-                            if(ricettaPrescrizioneNumCampi > (startIndex + 12)){
+                            if(ricettaPrescrizioneNumCampi > 12){
                                 dettaglioPrescrizione.setCodiceCatalogoPrescrizione(values.get(startIndex + 13));
                                 dettaglioPrescrizione.setTipoAccesso1(values.get(startIndex + 14));
                                 dettaglioPrescrizione.setNumeroNota(values.get(startIndex + 15));
