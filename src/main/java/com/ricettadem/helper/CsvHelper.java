@@ -240,7 +240,7 @@ public class CsvHelper {
                     annullaRicetta.setCodiceFiscale(values.get(1));
                     annullaRicetta.setNre(values.get(2));
 
-                    logger.info("Richiesta lotti nre successfully created: " + annullaRicetta.toString());
+                    logger.info("Annulla ricetta successfully created: " + annullaRicetta.toString());
                 }
             } else {
                 throw new RuntimeException("Il file in ingresso è vuoto");
@@ -462,5 +462,60 @@ public class CsvHelper {
         return certificatoMalattia;
     }
 
+    public static AnnullaCertificatoMalattia readAnnullaCertificatoMalattiaCsv(String filePath, String delimiter, Integer annullaCertificatoMalattiaNumCampi) throws Exception{
+        AnnullaCertificatoMalattia annullaCertificatoMalattia = null;
 
+        File path = new File(filePath);
+
+        logger.info("Processing file '" + filePath + "'");
+
+        List<List<String>> allValues = new ArrayList<>();
+
+        if(path.exists()) {
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+                while ((line = br.readLine()) != null) {
+                    String[] values = line.split(delimiter, -1);
+                    allValues.add(Arrays.asList(values));
+                }
+
+            } catch (IOException e) {
+                logger.error("Error reading file", e);
+                throw e;
+            }
+        }
+        if(!allValues.isEmpty()){
+            List<String> values = allValues.get(0);
+            if(!values.isEmpty()){
+                logger.info("The file contains " + values.size() + " elements");
+                if(values.size() < annullaCertificatoMalattiaNumCampi){
+                    throw new RuntimeException("Il file in ingresso non contiene tutti i campi necessari per creare l'annulla certificato malattia");
+                } else{
+                    // Creo il redattore
+                    Redattore medico = new Redattore();
+                    medico.setPincode(values.get(0));
+                    medico.setCodiceRegione(values.get(1));
+                    medico.setCodiceAsl(values.get(2));
+
+                    // Creo il lavoratore
+                    Lavoratore lavoratore = new Lavoratore();
+                    lavoratore.setCodiceFiscale(values.get(3));
+
+                    // Creo l'annulla certficato malattia
+                    annullaCertificatoMalattia = new AnnullaCertificatoMalattia();
+                    annullaCertificatoMalattia.setMedico(medico);
+                    annullaCertificatoMalattia.setLavoratore(lavoratore);
+                    annullaCertificatoMalattia.setIdCertificato(values.get(4));
+
+                    logger.info("Annulla certificato malattia successfully created: " + annullaCertificatoMalattia.toString());
+                }
+            } else{
+                throw new RuntimeException("Il file in ingresso è vuoto");
+            }
+        } else{
+            throw new RuntimeException("Il file in ingresso è vuoto");
+        }
+
+        return annullaCertificatoMalattia;
+    }
 }
