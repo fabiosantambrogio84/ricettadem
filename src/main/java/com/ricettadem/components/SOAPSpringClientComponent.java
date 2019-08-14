@@ -5,6 +5,7 @@ import com.ricettadem.model.AnnullaRicetta;
 import com.ricettadem.model.DettaglioPrescrizione;
 import com.ricettadem.model.Ricetta;
 import com.ricettadem.model.RichiestaLottiNre;
+import com.ricettadem.model.certificatiMalattia.AnnullaCertificatoMalattia;
 import com.ricettadem.model.certificatiMalattia.CertificatoMalattia;
 import com.ricettadem.soap.annullaPrescritto.AnnullaPrescrittoRichiesta;
 import com.ricettadem.soap.certificatiMalattia.*;
@@ -208,6 +209,26 @@ public class SOAPSpringClientComponent {
         request.setResidenza(residenza);
         request.setReperibilita(reperibilita);
         request.setMalattia(malattia);
+
+        return request;
+    }
+
+    public AnnullamentoMalattiaRequest createAnnullaCertificatoMalattiaRichiesta(AnnullaCertificatoMalattia annullaCertificatoMalattia) throws Exception{
+        AnnullamentoMalattiaRequest request = new AnnullamentoMalattiaRequest();
+
+        Lavoratore lavoratore = new Lavoratore();
+        lavoratore.setCodiceFiscale(EncryptDecryptHelper.encrypt(annullaCertificatoMalattia.getLavoratore().getCodiceFiscale(), sacCertificateFilePath));
+
+        Redattore medico = new Redattore();
+        medico.setCodiceAsl(annullaCertificatoMalattia.getMedico().getCodiceAsl());
+        medico.setCodiceRegione(annullaCertificatoMalattia.getMedico().getCodiceRegione());
+        medico.setCodiceStruttura(annullaCertificatoMalattia.getMedico().getCodiceStruttura());
+        medico.setCodiceFiscale(annullaCertificatoMalattia.getMedico().getCodiceFiscale());
+        medico.setPincode(EncryptDecryptHelper.encrypt(annullaCertificatoMalattia.getMedico().getPincode(), sacCertificateFilePath));
+
+        request.setLavoratore(lavoratore);
+        request.setMedico(medico);
+        request.setIdCertificato(annullaCertificatoMalattia.getIdCertificato());
 
         return request;
     }

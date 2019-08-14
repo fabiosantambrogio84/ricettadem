@@ -2,6 +2,7 @@ package com.ricettadem.services.certificatiMalattia;
 
 import com.ricettadem.components.SOAPSpringClientComponent;
 import com.ricettadem.helper.CsvHelper;
+import com.ricettadem.model.certificatiMalattia.AnnullaCertificatoMalattia;
 import com.ricettadem.model.certificatiMalattia.CertificatoMalattia;
 import com.ricettadem.soap.certificatiMalattia.*;
 import org.slf4j.Logger;
@@ -29,23 +30,20 @@ public class AnnullaCertificatoMalattiaService {
     @Value("${csv.delimiter}")
     private String delimiter;
 
-    @Value("${certificati-malattia.num-campi}")
-    private Integer certificatoMalattiaNumCampi;
+    @Value("${annulla-certificati-malattia.num-campi}")
+    private Integer annullaCertificatoMalattiaNumCampi;
 
-    @Value("${certificati-malattia.inizio-lettura}")
-    private Integer certificatoMalattiaInizioLettura;
+    @Value("${ws.uri.annulla-certificati-malattia}")
+    private String uriAnnullaCertificatoMalattia;
 
-    @Value("${ws.uri.certificati-malattia}")
-    private String uriInvioCertificatoMalattia;
+    @Value("${annulla-certificati-malattia.request.file-path}")
+    private String annullaCertificatoMalattiaFilePath;
 
-    @Value("${certificati-malattia.request.file-path}")
-    private String certificatoMalattiaFilePath;
+    @Value("${annulla-certificati-malattia.response.ok.file-path}")
+    private String annullaCertificatoMalattiaResponseFilePath;
 
-    @Value("${certificati-malattia.response.ok.file-path}")
-    private String certificatoMalattiaResponseFilePath;
-
-    @Value("${certificati-malattia.response.ko.file-path}")
-    private String certificatoMalattiaErrorResponseFilePath;
+    @Value("${annulla-certificati-malattia.response.ko.file-path}")
+    private String annullaCertificatoMalattiaErrorResponseFilePath;
 
     @Autowired
     private SOAPSpringClientComponent soapSpringClientComponent;
@@ -60,23 +58,23 @@ public class AnnullaCertificatoMalattiaService {
     public void invia() throws Exception{
         logger.info("ANNULLA CERTIFICATO MALATTIA");
         logger.info("Parsing the file...");
-        CertificatoMalattia certificatoMalattia = CsvHelper.readCertificatoMalattiaCsv(certificatoMalattiaFilePath, delimiter, certificatoMalattiaNumCampi, certificatoMalattiaInizioLettura);
-        logger.info("Certificato malattia retrieved from file: " + certificatoMalattia.toString());
+        AnnullaCertificatoMalattia annullaCertificatoMalattia = CsvHelper.readAnnullaCertificatoMalattiaCsv(annullaCertificatoMalattiaFilePath, delimiter, annullaCertificatoMalattiaNumCampi);
+        logger.info("Annulla certificato malattia retrieved from file: " + annullaCertificatoMalattia.toString());
 
         logger.info("Creating the soap request...");
-        InvioMalattiaRequest request = soapSpringClientComponent.createCertificatoMalattiaRichiesta(certificatoMalattia);
+        AnnullamentoMalattiaRequest request = soapSpringClientComponent.createAnnullaCertificatoMalattiaRichiesta(annullaCertificatoMalattia);
         logger.info("Soap request successfully created");
 
-        InvioMalattiaResponse response = null;
+        AnnullamentoMalattiaResponse response = null;
         logger.info("Performing the soap request...");
-        webServiceTemplateCertificatiMalattia.setDefaultUri(uriInvioCertificatoMalattia);
-        response = (InvioMalattiaResponse)webServiceTemplateCertificatiMalattia.marshalSendAndReceive(request);
+        webServiceTemplateCertificatiMalattia.setDefaultUri(uriAnnullaCertificatoMalattia);
+        response = (AnnullamentoMalattiaResponse)webServiceTemplateCertificatiMalattia.marshalSendAndReceive(request);
         logger.info("Soap request successfully performed");
 
         logger.info("Creating the response file...");
 
         RicevutaNonOk ricevutaNonOk = response.getRicevutaNonOk();
-        RicevutaOkInvioMalattia ricevutaOkInvioMalattia = response.getRicevutaOkInvioMalattia();
+        RicevutaOkAnnullamento ricevutaOkAnnullaMalattia = response.getRicevutaOkAnnullamentoMalattia();
         if(ricevutaNonOk != null){
             logger.error("Response KO");
 
@@ -85,7 +83,7 @@ public class AnnullaCertificatoMalattiaService {
             try{
                 BufferedWriter bw = null;
                 try{
-                    File responseFile = new  File(certificatoMalattiaErrorResponseFilePath);
+                    File responseFile = new  File(annullaCertificatoMalattiaErrorResponseFilePath);
                     if(responseFile != null && responseFile.exists()){
                         responseFile.delete();
                     }
@@ -113,27 +111,27 @@ public class AnnullaCertificatoMalattiaService {
                 throw e;
             }
 
-        } else if(ricevutaOkInvioMalattia != null){
+        } else if(ricevutaOkAnnullaMalattia != null){
             logger.info("Response OK");
 
-            String idCertificato = ricevutaOkInvioMalattia.getIdCertificato();
-            Date date = ricevutaOkInvioMalattia.getDataRicezione().toGregorianCalendar().getTime();
+            String idAnnullamento = ricevutaOkAnnullaMalattia.getIdAnnullamento();
+            Date date = ricevutaOkAnnullaMalattia.getDataRicezione().toGregorianCalendar().getTime();
             String formattedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
 
-            logger.info("Id certificato: "+idCertificato);
+            logger.info("Id annullamento: "+idAnnullamento);
             logger.info("Data ricezione: "+formattedDate);
 
             try{
                 BufferedWriter bw = null;
                 try{
-                    File responseFile = new  File(certificatoMalattiaResponseFilePath);
+                    File responseFile = new  File(annullaCertificatoMalattiaResponseFilePath);
                     if(responseFile != null && responseFile.exists()){
                         responseFile.delete();
                     }
                     FileWriter fw = new FileWriter(responseFile, true);
                     bw = new BufferedWriter(fw);
 
-                    bw.write("Id certificato: " + idCertificato);
+                    bw.write("Id annullamento: " + idAnnullamento);
                     bw.newLine();
                     bw.write("Data ricezione: " + formattedDate);
                     bw.newLine();
