@@ -33,6 +33,9 @@ public class AnnullaCertificatoMalattiaService {
     @Value("${annulla-certificati-malattia.num-campi}")
     private Integer annullaCertificatoMalattiaNumCampi;
 
+    @Value("${annulla-certificati-malattia.inizio-lettura}")
+    private Integer annullaCertificatoMalattiaInizioLettura;
+
     @Value("${ws.uri.annulla-certificati-malattia}")
     private String uriAnnullaCertificatoMalattia;
 
@@ -58,7 +61,7 @@ public class AnnullaCertificatoMalattiaService {
     public void invia() throws Exception{
         logger.info("ANNULLA CERTIFICATO MALATTIA");
         logger.info("Parsing the file...");
-        AnnullaCertificatoMalattia annullaCertificatoMalattia = CsvHelper.readAnnullaCertificatoMalattiaCsv(annullaCertificatoMalattiaFilePath, delimiter, annullaCertificatoMalattiaNumCampi);
+        AnnullaCertificatoMalattia annullaCertificatoMalattia = CsvHelper.readAnnullaCertificatoMalattiaCsv(annullaCertificatoMalattiaFilePath, delimiter, annullaCertificatoMalattiaNumCampi, annullaCertificatoMalattiaInizioLettura);
         logger.info("Annulla certificato malattia retrieved from file: " + annullaCertificatoMalattia.toString());
 
         logger.info("Creating the soap request...");

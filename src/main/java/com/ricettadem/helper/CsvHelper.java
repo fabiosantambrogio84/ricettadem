@@ -462,7 +462,7 @@ public class CsvHelper {
         return certificatoMalattia;
     }
 
-    public static AnnullaCertificatoMalattia readAnnullaCertificatoMalattiaCsv(String filePath, String delimiter, Integer annullaCertificatoMalattiaNumCampi) throws Exception{
+    public static AnnullaCertificatoMalattia readAnnullaCertificatoMalattiaCsv(String filePath, String delimiter, Integer annullaCertificatoMalattiaNumCampi, Integer annullaCertificatoMalattiaInizioLettura) throws Exception{
         AnnullaCertificatoMalattia annullaCertificatoMalattia = null;
 
         File path = new File(filePath);
@@ -493,19 +493,20 @@ public class CsvHelper {
                 } else{
                     // Creo il redattore
                     Redattore medico = new Redattore();
-                    medico.setPincode(values.get(0));
-                    medico.setCodiceRegione(values.get(1));
-                    medico.setCodiceAsl(values.get(2));
+                    medico.setPincode(values.get(annullaCertificatoMalattiaInizioLettura));
+                    medico.setCodiceRegione(values.get(annullaCertificatoMalattiaInizioLettura + 1));
+                    medico.setCodiceAsl(values.get(annullaCertificatoMalattiaInizioLettura + 2));
+                    medico.setCodiceStruttura(values.get(annullaCertificatoMalattiaInizioLettura + 3));
 
                     // Creo il lavoratore
                     Lavoratore lavoratore = new Lavoratore();
-                    lavoratore.setCodiceFiscale(values.get(3));
+                    lavoratore.setCodiceFiscale(values.get(annullaCertificatoMalattiaInizioLettura + 5));
 
                     // Creo l'annulla certficato malattia
                     annullaCertificatoMalattia = new AnnullaCertificatoMalattia();
                     annullaCertificatoMalattia.setMedico(medico);
                     annullaCertificatoMalattia.setLavoratore(lavoratore);
-                    annullaCertificatoMalattia.setIdCertificato(values.get(4));
+                    annullaCertificatoMalattia.setIdCertificato(values.get(annullaCertificatoMalattiaInizioLettura + 4));
 
                     logger.info("Annulla certificato malattia successfully created: " + annullaCertificatoMalattia.toString());
                 }

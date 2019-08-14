@@ -25,7 +25,7 @@ public class EncryptDecryptHelper {
             fis = new FileInputStream(fileCerPath);
             CertificateFactory cf = CertificateFactory.getInstance("X509");
             X509Certificate cert = (X509Certificate) cf.generateCertificate(fis);
-            logger.info(cert.getSerialNumber().toString(16));
+            //logger.info(cert.getSerialNumber().toString(16));
             PublicKey publicKey = cert.getPublicKey();
 
             Cipher encryptCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
