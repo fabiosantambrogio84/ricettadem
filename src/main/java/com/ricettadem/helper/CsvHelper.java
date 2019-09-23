@@ -500,13 +500,13 @@ public class CsvHelper {
 
                     // Creo il lavoratore
                     Lavoratore lavoratore = new Lavoratore();
-                    lavoratore.setCodiceFiscale(values.get(annullaCertificatoMalattiaInizioLettura + 5));
+                    lavoratore.setCodiceFiscale(values.get(annullaCertificatoMalattiaInizioLettura + 4));
 
                     // Creo l'annulla certficato malattia
                     annullaCertificatoMalattia = new AnnullaCertificatoMalattia();
                     annullaCertificatoMalattia.setMedico(medico);
                     annullaCertificatoMalattia.setLavoratore(lavoratore);
-                    annullaCertificatoMalattia.setIdCertificato(values.get(annullaCertificatoMalattiaInizioLettura + 4));
+                    annullaCertificatoMalattia.setIdCertificato(values.get(annullaCertificatoMalattiaInizioLettura + 5));
 
                     logger.info("Annulla certificato malattia successfully created: " + annullaCertificatoMalattia.toString());
                 }

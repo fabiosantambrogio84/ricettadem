@@ -218,6 +218,7 @@ public class SOAPSpringClientComponent {
 
         Lavoratore lavoratore = new Lavoratore();
         lavoratore.setCodiceFiscale(EncryptDecryptHelper.encrypt(annullaCertificatoMalattia.getLavoratore().getCodiceFiscale(), sacCertificateFilePath));
+        //lavoratore.setCodiceFiscale(annullaCertificatoMalattia.getLavoratore().getCodiceFiscale());
 
         Redattore medico = new Redattore();
         medico.setCodiceAsl(annullaCertificatoMalattia.getMedico().getCodiceAsl());
