@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class AnnullaRicettaService {
 
-    private static Logger logger = LoggerFactory.getLogger(AnnullaRicettaService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnnullaRicettaService.class);
 
     private static final String ESITO_OK = "0000";
 

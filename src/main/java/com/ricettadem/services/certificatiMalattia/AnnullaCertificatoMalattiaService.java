@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 public class AnnullaCertificatoMalattiaService {
 
-    private static Logger logger = LoggerFactory.getLogger(AnnullaCertificatoMalattiaService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnnullaCertificatoMalattiaService.class);
 
     private static final String ESITO_OK = "0000";
 

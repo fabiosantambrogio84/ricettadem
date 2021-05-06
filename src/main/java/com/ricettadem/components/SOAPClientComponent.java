@@ -21,19 +21,13 @@ import java.util.Iterator;
 @Component
 public class SOAPClientComponent {
 
-    private static Logger logger = LoggerFactory.getLogger(SOAPClientComponent.class);
+    private static final Logger logger = LoggerFactory.getLogger(SOAPClientComponent.class);
 
     @Value("${ws.credentials.file-path}")
     private String credentialsFilePath;
 
     @Value("${ws.uri.dpcm.invio-ricetta}")
     private String uriInvioRicettaDpcm;
-
-    @Value("${dpcm.ricetta.response.ok.file-path}")
-    private String ricettaResponseFilePath;
-
-    @Value("${dpcm.ricetta.response.ko.file-path}")
-    private String ricettaErrorResponseFilePath;
 
     public RicettaDpcmInvioResponse sendInvioRicettaDpcm(String fileName, File file) throws Exception{
 
@@ -135,7 +129,7 @@ public class SOAPClientComponent {
         logger.info("Soap message successfully sent");
 
         if(ricettaDpcmInvioResponse != null){
-            logger.info("Response is: " + ricettaDpcmInvioResponse.toString());
+            logger.info("Response is: " + ricettaDpcmInvioResponse);
         }
 
         httpsConnection.disconnect();
@@ -144,19 +138,20 @@ public class SOAPClientComponent {
     }
 
     private String getPrintableSoapMessage(SOAPMessage soapMessage){
-        String result = "";
         ByteArrayOutputStream out = null;
         try{
             out = new ByteArrayOutputStream();
             soapMessage.writeTo(out);
-            return new String(out.toByteArray());
+            return out.toString();
         }catch(Exception e){
             return soapMessage.toString();
         } finally{
             try{
-                out.close();
+                if(out != null){
+                    out.close();
+                }
             } catch(Exception e){
-
+                logger.warn("Unable to close array output stream");
             }
         }
     }

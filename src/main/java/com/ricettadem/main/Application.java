@@ -16,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = "com.ricettadem")
 public class Application {
 
-    private static Logger logger = LoggerFactory.getLogger(Application.class);
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Autowired
     private RicettaService ricettaService;
@@ -36,14 +36,14 @@ public class Application {
     @Autowired
     private AnnullaCertificatoMalattiaService annullaCertificatoMalattiaService;
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         logger.info("Application start");
         ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
         Application app = context.getBean(Application .class);
 
         logger.info("Application running");
 
-        String arg1 = null;
+        String arg1;
         String arg2 = null;
         try{
             arg1 = args[0];
@@ -67,42 +67,42 @@ public class Application {
         if(region != null && !region.equals("")){
             logger.info("Executing program for region '" + region + "'");
         }
-        if(type.toLowerCase().equals("invio-ricetta")){
+        if(type.equalsIgnoreCase("invio-ricetta")){
             try {
                 ricettaService.invia(region);
             }catch(Exception e){
                 logger.error("Error during execution of 'invio-ricetta'", e);
                 throw e;
             }
-        } else if(type.toLowerCase().equals("richiesta-lotti-nre")){
+        } else if(type.equalsIgnoreCase("richiesta-lotti-nre")){
             try{
                 richiestaLottiNreService.invia();
             } catch(Exception e){
                 logger.error("Error during execution of 'richiesta-lotti-nre'", e);
                 throw e;
             }
-        } else if(type.toLowerCase().equals("annulla-ricetta")){
+        } else if(type.equalsIgnoreCase("annulla-ricetta")){
             try{
                 annullaRicettaService.invia();
             } catch(Exception e){
                 logger.error("Error during execution of 'annulla-ricetta'", e);
                 throw e;
             }
-        } else if(type.toLowerCase().equals("invio-ricetta-dpcm")){
+        } else if(type.equalsIgnoreCase("invio-ricetta-dpcm")){
             try{
                 ricettaMirService.invia();
             } catch(Exception e){
                 logger.error("Error during execution of 'invio-ricetta-dpcm'", e);
                 throw e;
             }
-        } else if(type.toLowerCase().equals("invio-certificato-malattia")){
+        } else if(type.equalsIgnoreCase("invio-certificato-malattia")){
             try{
                 certificatoMalattiaService.invia();
             } catch(Exception e){
                 logger.error("Error during execution of 'invio-certificato-malattia'", e);
                 throw e;
             }
-        } else if(type.toLowerCase().equals("annulla-certificato-malattia")){
+        } else if(type.equalsIgnoreCase("annulla-certificato-malattia")){
             try{
                 annullaCertificatoMalattiaService.invia();
             } catch(Exception e){

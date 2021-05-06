@@ -28,7 +28,7 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class RicettaMirService {
 
-    private static Logger logger = LoggerFactory.getLogger(RicettaMirService.class);
+    private static final Logger logger = LoggerFactory.getLogger(RicettaMirService.class);
 
     private static final String ESITO_OK = "000";
 

@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:cert="http://cert.sanita.finanze.it/" targetNamespace="http://cert.sanita.finanze.it/" elementFormDefault="unqualified">
+    <annotation>
+        <documentation>Versione 2.0</documentation>
+    </annotation>
+    <element name="invioMalattiaRequest">
+        <annotation>
+            <documentation>
+                Invio del certificato di malattia.
+                L'elemento residenza indica la residenza o il domicilio abituale del lavoratore.
+                L'elemento reperibilita' è opzionale, va indicato nel caso in cui durante il periodo di malattia non coincida con la residenza.
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="residenza" type="cert:indirizzo"/>
+                <element name="reperibilita" type="cert:reperibilita" minOccurs="0"/>
+                <element name="malattia" type="cert:malattia"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="invioMalattiaResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkInvioMalattia" type="cert:ricevutaOkInvioMalattia" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="rettificaMalattiaRequest">
+        <complexType>
+            <sequence>
+                <annotation>
+                    <documentation>
+                        Rettifica del certificato di malattia.
+                        E' necessario indicare l'identificativo del certificato da
+                        rettificare
+                        e la nuova data di fine prognosi, che può essere solo
+                        anticipata rispetto
+                        a quella originaria.
+                    </documentation>
+                </annotation>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="idCertificato" type="string"/>
+                <element name="dataFine" type="cert:dateString"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="rettificaMalattiaResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkRettificaMalattia" type="cert:ricevutaOkRettificaMalattia" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="annullamentoMalattiaRequest">
+        <complexType>
+            <sequence>
+                <annotation>
+                    <documentation>
+                        Annullamento del certificato di malattia.
+                        E' necessario indicare l'identificativo del certificato da
+                        annullare.
+                    </documentation>
+                </annotation>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="idCertificato" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="annullamentoMalattiaResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkAnnullamentoMalattia" type="cert:ricevutaOkAnnullamento" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="ricercaMalattiaRequest">
+        <complexType>
+            <sequence>
+                <annotation>
+                    <documentation>
+                        Ricerca della lista dei certificati di malattia emessi da un medico per un lavoratore.
+                    </documentation>
+                </annotation>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="dataInizioRicerca" type="cert:dateString" minOccurs="0">
+                    <annotation>
+                        <documentation>
+                            Se non valorizzata, il servizio restituisce i certificati rilasciati negli ultimi 6 mesi;
+                            se anteriore piu' di 6 mesi : risposta OK con solo ultimi 6
+
+                            mesi
+
+
+                        </documentation>
+                    </annotation>
+                </element>
+                <element name="dataFineRicerca" type="cert:dateString"
+
+                         minOccurs="0">
+                    <annotation>
+                        <documentation>
+                            Se non valorizzata, il servizio assume come data di fine ricerca la data odierna
+                        </documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="ricercaMalattiaResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkRicercaMalattia" type="cert:ricevutaOkRicercaMalattia" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="ristampaMalattiaRequest">
+        <annotation>
+            <documentation>
+                Ristampa del certificato di malattia.
+                Si ottengono tutti i dati necessari per ristampare un certificato
+                emesso.
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="idCertificato" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="ristampaMalattiaResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkRistampaMalattia" type="cert:ricevutaOkRistampaMalattia" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="invioRicoveroRequest">
+        <annotation>
+            <documentation>
+                Comunicazione di inizio ricovero.
+                Nel caso di utente operatore devono essere presenti gli elementi codiceRegione e codiceAsl, invece il campo codiceStruttura e'
+                opzionale.
+                Nel caso di utente regione devono essere presenti gli elementi codiceFiscale dell'operatore, codiceRegione e codiceAsl, invece il campo codiceStruttura e' opzionale.
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="operatore" type="cert:redattore" minOccurs="0"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="residenza" type="cert:indirizzo"/>
+                <element name="ricovero" type="cert:ricovero"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="invioRicoveroResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkInvioRicovero" type="cert:ricevutaOkInvioRicovero" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="annullamentoRicoveroRequest">
+        <complexType>
+            <sequence>
+                <annotation>
+                    <documentation>
+                        Annullamento della comunicazione di inizio ricovero.
+                        E' necessario indicare l'identificativo della comunicazione di inizio ricovero da annullare.
+                    </documentation>
+                </annotation>
+                <element name="operatore" type="cert:redattore" minOccurs="0"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="idCertificato" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="annullamentoRicoveroResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkAnnullamentoRicovero" type="cert:ricevutaOkAnnullamento" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="invioDimissioneRequest">
+        <annotation>
+            <documentation>
+                Invio del certificato di dimissione.
+                L'elemento idInizioRicovero serve a richiamare la comunicazione di inizio
+                ricovero corrispondente.
+                I seguenti elementi devono essere gli stessi della comunicazione di inizio ricovero:
+                -	elemento medico - codiceRegione, codiceAsl, codiceStruttura, se presente nella comunicazione di ricovero;
+                -	elemento lavoratore;
+                -	elemento residenza;
+                -	elemento dimissione - dataRicovero. Inoltre:
+                se l'elemento giornataLavorata e' presente e valorizzato a true nella comunicazione di ricovero, deve assumere valore true.
+                Se l'elemento trauma e' presente e valorizzato a true
+                nella comunicazione di ricovero, deve assumere valore true.
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="idInizioRicovero" type="string"/>
+                <element name="residenza" type="cert:indirizzo"/>
+                <element name="reperibilita" type="cert:reperibilita" minOccurs="0"/>
+                <element name="dimissione" type="cert:dimissione"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="invioDimissioneResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkInvioDimissione" type="cert:ricevutaOkInvioDimissione" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="rettificaDimissioneRequest">
+        <complexType>
+            <sequence>
+                <annotation>
+                    <documentation>
+                        Rettifica del certificato di malattia in sede di dimissione. E' necessario indicare l'identificativo del certificato da
+                        rettificare
+                        e la nuova data di fine prognosi, che può essere solo
+                        anticipata rispetto
+                        a quella originaria.
+                    </documentation>
+                </annotation>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+                <element name="idCertificato" type="string"/>
+                <element name="dataFine" type="cert:dateString"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="rettificaDimissioneResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkRettificaDimissione" type="cert:ricevutaOkRettificaDimissione" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <element name="interrogazioneLavoratoreRequest">
+        <annotation>
+            <documentation>
+                Interrogazione del codice fiscale del lavoratore.
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="medico" type="cert:redattore"/>
+                <element name="lavoratore" type="cert:lavoratore"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="interrogazioneLavoratoreResponse">
+        <complexType>
+            <complexContent>
+                <extension base="cert:ricevuta">
+                    <sequence>
+                        <element name="ricevutaOkInterrogazioneLavoratore" type="cert:ricevutaOkInterrogazioneLavoratore" minOccurs="0"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+
+    <complexType name="lavoratore">
+        <sequence>
+            <element name="codiceFiscale" type="cert:string200"/>
+        </sequence>
+    </complexType>
+    <complexType name="indirizzo">
+        <sequence>
+            <annotation>
+                <documentation>
+                    E' obbligatorio almeno uno tra codiceCatastale e la coppia comune e provincia. In assenza di n.civico l'elemento "civico" dev'essere valorizzato con "SNC". Utilizzare questo campo per
+
+                    indicare
+
+
+                    palazzina, scala, interno, per es. civico = 89 plA scC int8
+                </documentation>
+
+            </annotation>
+            <element name="via" type="cert:via"/>
+            <element name="civico" type="cert:civico"/>
+            <element name="cap" type="cert:cap"/>
+            <element name="codiceCatastale" type="cert:codiceComune" minOccurs="0"/>
+            <element name="comune" type="cert:comune" minOccurs="0"/>
+            <element name="provincia" type="cert:provincia" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="reperibilita">
+        <annotation>
+            <documentation>
+                Contatto presso cui il lavoratore e' reperibile durante il periodo di malattia. Da completare nel
+                caso non coincida con il domicilio abituale ovvero sia necessario fornire indicazioni aggiuntive per la reperibilita'.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="cognome" type="cert:cognome" minOccurs="0"/>
+            <element name="indirizzo" type="cert:indirizzo" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="redattore">
+        <annotation>
+            <documentation>
+                Medico che redige il certificato di malattia
+                oppure operatore che redige la comunicazione di inizio ricovero.
+                Se l'utente è una regione è obbligatorio impostare l'elemento codiceFiscale
+                per specificare il medico oppure l'operatore per cui si sta inviando il certificato
+                o la comunicazione e l'elemento pincode non deve essere impostato.
+                Se l'utente è un medico è obbligatorio l'elemento pincode e l'elemento codiceFiscale non deve essere impostato. Il
+                pincode deve essere cifrato.
+                Se l'utente e' un operatore consultare la documentazione specifica del servizio di invio ricovero.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="codiceFiscale" type="cert:codiceFiscale" minOccurs="0"/>
+            <element name="pincode" type="cert:string200" minOccurs="0"/>
+            <element name="codiceRegione" type="cert:string3" minOccurs="0">
+                <annotation>
+                    <documentation>Codice regione della ASL di appartenenza</documentation>
+                </annotation>
+            </element>
+            <element name="codiceAsl" type="cert:string3" minOccurs="0">
+                <annotation>
+                    <documentation>
+                        Codice ASL o Azienda Ospedaliera di appartenenza (Codifica Ministero Salute)
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="codiceStruttura" minOccurs="0">
+                <annotation>
+                    <documentation>Struttura di appartenenza (Codifica Ministero Salute)</documentation>
+                </annotation>
+                <simpleType>
+                    <restriction base="string">
+                        <maxLength value="6"/>
+                    </restriction>
+                </simpleType>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="malattia">
+        <annotation>
+            <documentation>
+                Giornata lavorata: se true indica che il lavoratore ha dichiarato di aver completato la propria attivita' lavorativa alla data del
+                ricovero,
+                false altrimenti.
+                Trauma: indica l'occorrenza di un evento traumatico.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="ruoloMedico" type="cert:ruolo"/>
+            <element name="dataRilascio" type="cert:dateString"/>
+            <element name="dataInizio" type="cert:dateString"/>
+            <element name="dataFine" type="cert:dateString"/>
+            <element name="visita" type="cert:tipoVisita"/>
+            <element name="tipoCertificato" type="cert:tipoCertificato"/>
+            <element name="diagnosi" type="cert:diagnosi"/>
+            <element name="giornataLavorata" type="cert:booleanString" minOccurs="0"/>
+            <element name="trauma" type="cert:booleanString" minOccurs="0"/>
+            <element name="agevolazioni" type="cert:agevolazioni" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="malattiaRidotta">
+        <annotation>
+            <documentation>
+                Sottoinsieme dell'elemento malattia, utilizzato come risultato della funzione di ricerca.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="dataRilascio" type="cert:dateString"/>
+            <element name="dataInizio" type="cert:dateString"/>
+            <element name="dataFine" type="cert:dateString"/>
+            <element name="visita" type="cert:tipoVisita"/>
+            <element name="tipoCertificato" type="cert:tipoCertificato"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricovero">
+        <annotation>
+            <documentation>
+                Giornata lavorata: se true indica che il lavoratore ha dichiarato di aver completato la propria attivita' lavorativa alla data del
+                ricovero,
+                false altrimenti.
+                Trauma: indica l'occorrenza di un evento traumatico.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="dataRicovero" type="cert:dateString"/>
+            <element name="giornataLavorata" type="cert:booleanString" minOccurs="0"/>
+            <element name="trauma" type="cert:booleanString" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="dimissione">
+        <annotation>
+            <documentation>
+                La data ricovero deve essere la stessa della comunicazione di inizio ricovero.
+                Giornata lavorata: se true indica che il lavoratore ha dichiarato di aver completato la propria attivita' lavorativa alla data del
+                ricovero,
+                false altrimenti.
+                Trauma: indica l'occorrenza di un evento traumatico.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="ruoloMedico" type="cert:ruolo"/>
+            <element name="dataRicovero" type="cert:dateString"/>
+            <element name="dataDimissione" type="cert:dateString"/>
+            <element name="dataFine" type="cert:dateString"/>
+            <element name="tipoCertificato" type="cert:tipoCertificato"/>
+            <element name="tipoRicovero" type="cert:tipoRicovero"/>
+            <element name="diagnosi" type="cert:diagnosi"/>
+            <element name="giornataLavorata" type="cert:booleanString" minOccurs="0"/>
+            <element name="trauma" type="cert:booleanString" minOccurs="0"/>
+            <element name="agevolazioni" type="cert:agevolazioni" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="diagnosi">
+        <annotation>
+            <documentation>
+                E' obbligatorio almeno uno tra gli elementi codiceDiagnosi e noteDiagnosi,
+                ma e' anche possibile inserirli tutti e due.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="codiceDiagnosi" type="cert:codiceDiagnosi" minOccurs="0"/>
+            <element name="noteDiagnosi" type="cert:string200" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="anagrafica">
+        <sequence>
+            <element name="codiceFiscale" type="cert:codiceFiscaleEsteso"/>
+            <element name="cognome" type="cert:cognome"/>
+            <element name="nome" type="cert:nome"/>
+            <element name="sesso" type="cert:sesso"/>
+            <element name="dataNascita" type="cert:dateString"/>
+            <element name="comuneNascita" type="cert:comune"/>
+            <element name="provinciaNascita" type="cert:provincia"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevuta" abstract="true">
+        <sequence>
+            <element name="ricevutaVarie" type="cert:ricevutaVarie" minOccurs="0"/>
+            <element name="ricevutaInfo" type="cert:ricevutaInfo" minOccurs="0"/>
+            <element name="ricevutaNonOk" type="cert:ricevutaNonOk" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaVarie">
+        <sequence>
+            <annotation>
+                <documentation>Informazioni varie</documentation>
+            </annotation>
+            <element name="info" type="cert:varie" maxOccurs="30"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaInfo">
+        <sequence>
+            <annotation>
+                <documentation>Informazioni sul sistema</documentation>
+            </annotation>
+            <element name="info" type="cert:info" maxOccurs="30"/>
+        </sequence>
+    </complexType>
+    <complexType name="varie">
+        <sequence>
+            <element name="chiave" type="string" minOccurs="0"/>
+            <element name="valore" type="string" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="info">
+        <sequence>
+            <element name="codice" type="string" minOccurs="0"/>
+            <element name="dataInserimento" type="dateTime" minOccurs="0"/>
+            <element name="info" type="string" minOccurs="0"/>
+            <element name="dataInizioVal" type="dateTime" minOccurs="0"/>
+            <element name="dataFineVal" type="dateTime" minOccurs="0"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaNonOk">
+        <sequence>
+            <annotation>
+                <documentation>Ricevuta in caso di esito negativo</documentation>
+            </annotation>
+            <element name="errore" type="cert:errore" maxOccurs="10"/>
+        </sequence>
+    </complexType>
+    <complexType name="errore">
+        <sequence>
+            <element name="tipoErrore" type="cert:string1-5"/>
+            <element name="sezioneErrata" type="string"/>
+            <element name="descrizione" type="string"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkInvioMalattia">
+        <sequence>
+            <element name="dataRicezione" type="dateTime"/>
+            <element name="idCertificato" type="string"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkRettificaMalattia">
+        <sequence>
+            <element name="dataRicezione" type="dateTime"/>
+            <element name="idCertificato" type="string"/>
+            <element name="lavoratore" type="cert:anagrafica"/>
+            <element name="residenza" type="cert:indirizzo"/>
+            <element name="reperibilita" type="cert:reperibilita" minOccurs="0"/>
+            <element name="malattia" type="cert:malattia"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkAnnullamento">
+        <sequence>
+            <element name="dataRicezione" type="dateTime"/>
+            <element name="idAnnullamento" type="string"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkRicercaMalattia">
+        <sequence>
+            <element name="datiCertificato" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                    <sequence>
+                        <element name="idCertificato" type="string"/>
+                        <element name="dataRicezione" type="dateTime"/>
+                        <element name="annullato" type="cert:booleanString"/>
+                        <element name="malattia" type="cert:malattiaRidotta">
+                            <annotation>
+                                <documentation>
+                                    Vengono restituiti solo gli elementi dataRilascio, dataInizio, dataFine, visita e tipoCertificato.
+                                </documentation>
+                            </annotation>
+                        </element>
+                    </sequence>
+                </complexType>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkRistampaMalattia">
+        <sequence>
+            <element name="lavoratore" type="cert:anagrafica"/>
+            <element name="residenza" type="cert:indirizzo"/>
+            <element name="reperibilita" type="cert:reperibilita" minOccurs="0"/>
+            <element name="malattia" type="cert:malattia"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkInvioRicovero">
+        <sequence>
+            <element name="dataRicezione" type="dateTime"/>
+            <element name="idInizioRicovero" type="string"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkInvioDimissione">
+        <sequence>
+            <element name="dataRicezione" type="dateTime"/>
+            <element name="idInizioRicovero" type="string"/>
+            <element name="idCertificato" type="string"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkRettificaDimissione">
+        <sequence>
+            <element name="dataRicezione" type="dateTime"/>
+            <element name="idCertificato" type="string"/>
+            <element name="lavoratore" type="cert:anagrafica"/>
+            <element name="residenza" type="cert:indirizzo"/>
+            <element name="reperibilita" type="cert:reperibilita" minOccurs="0"/>
+            <element name="dimissione" type="cert:dimissione"/>
+        </sequence>
+    </complexType>
+    <complexType name="ricevutaOkInterrogazioneLavoratore">
+        <sequence>
+            <element name="cognome">
+                <simpleType>
+                    <restriction base="string">
+                        <maxLength value="40"/>
+                    </restriction>
+                </simpleType>
+            </element>
+            <element name="nome">
+                <simpleType>
+                    <restriction base="string">
+                        <maxLength value="40"/>
+                    </restriction>
+                </simpleType>
+            </element>
+        </sequence>
+    </complexType>
+
+    <simpleType name="string200">
+        <restriction base="string">
+            <maxLength value="200"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="via">
+        <restriction base="string">
+            <minLength value="2"/>
+            <maxLength value="50"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="civico">
+        <restriction base="string">
+            <minLength value="1"/>
+            <maxLength value="15"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="cap">
+        <restriction base="string">
+            <pattern value="[0-9]{5}"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="codiceComune">
+        <restriction base="string">
+            <annotation>
+                <documentation>Codice catastale del comune</documentation>
+            </annotation>
+            <pattern value="[a-zA-Z][0-9]{3}"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="comune">
+        <restriction base="string">
+            <maxLength value="25"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="provincia">
+        <annotation>
+            <documentation>
+                Codice della provincia. Per la codifica dei dati anagrafici in caso di stato Estero si utilizza il valore fisso "EE"
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="[A-Za-z]{2}"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="cognome">
+        <restriction base="string">
+            <minLength value="2"/>
+            <maxLength value="24"/>
+            <pattern value="[a-zA-Z ']*"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="string3">
+        <restriction base="string">
+            <pattern value="[0-9]{3}"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="codiceFiscale">
+        <annotation>
+            <documentation>
+                Pattern classico per il codice fiscale (alfanumerico da 16)
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="[A-Z]{6}[0-9A-Z]{2}[A-Z][0-9A-Z]{2}[A-Z][0-9A- Z]{3}[A-Z]"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="codiceFiscaleEsteso">
+        <annotation>
+            <documentation>
+                Il pattern esteso per il codice fiscale,
+                oltre al classico alfanumerico da 16 deve prevedere anche i codici fiscali provvisori (numerici da 11)
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="([A-Z]{6}[0-9A-Z]{2}[A-Z][0-9A-Z]{2}[A-Z][0-9A- Z]{3}[A-Z])|([0-9]{11})"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="ruolo">
+        <annotation>
+            <documentation> Ruolo del medico.
+                Puo' operare come medico convenzionato con il Servizio Sanitario Nazionale (SSN)
+                oppure come libero professionista.
+                In breve: S = SSN, P = Professionista privato
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="S|P"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="tipoVisita">
+        <annotation>
+            <documentation>
+                A = Visita ambulatoriale, D = Visita domiciliare, P = Pronto
+                soccorso
+            </documentation>
+        </annotation>
+<restriction base="string">
+    <pattern value="A|D|P"/>
+</restriction>
+    </simpleType>
+    <simpleType name="tipoCertificato">
+        <annotation>
+            <documentation>
+                I = Inizio, C = Continuazione, R = Ricaduta
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="I|C|R"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="codiceDiagnosi">
+        <annotation>
+            <documentation>
+                Codifica ICD9_CM - revisione 2007; formati previsti: codiceprincipale.codicesecondario, codiceprincipale (es. 487 ,
+                487.1 , 44, V17.34)
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="(E?[V0-9][0-9]{1,2})|(E?[V0-9][0-9]{1,2}[.][0- 9]{0,2})"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="agevolazioni">
+        <annotation>
+            <documentation>
+                Disposizioni normative che individuano le agevolazioni per il lavoratore in relazione alle assenze per malattia dovute a:
+                -	patologia grave che richiede terapia salvavita
+                -	malattia per la quale e' stata riconosciuta la causa di
+                servizio
+                -	stato patologico sotteso o connesso alla situazione di
+                invalidita' riconosciuta
+                In breve: T = Terapia salvavita, C = Causa di servizio, I = Invalidita' riconosciuta
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="T|C|I"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="string1-5">
+        <restriction base="string">
+            <pattern value="[0-9]{1,5}"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="nome">
+        <restriction base="string">
+            <minLength value="2"/>
+            <maxLength value="20"/>
+            <pattern value="[a-zA-Z ']*"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="sesso">
+        <annotation>
+            <documentation>
+                M = Maschile, F = Femminile
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="M|F"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="tipoRicovero">
+        <annotation>
+            <documentation>
+                R = Ricovero, H = Day hospital
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="R|H"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="booleanString">
+        <restriction base="string">
+            <pattern value="true|false"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="dateString">
+        <restriction base="string">
+            <pattern value="[0-9]{4}-[0-9]{2}-[0-9]{2}"/>
+        </restriction>
+    </simpleType>
+</schema>
+

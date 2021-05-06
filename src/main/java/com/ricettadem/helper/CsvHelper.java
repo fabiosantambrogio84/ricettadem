@@ -16,21 +16,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CsvHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(CsvHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(CsvHelper.class);
 
-    private static final String REGIONE_SICILIA = "sicilia";
+    //private static final String REGIONE_SICILIA = "sicilia";
 
     public static Ricetta readRicettaCsv(String filePath, String delimiter, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi, String region) throws Exception{
-        Ricetta ricetta = null;
+        Ricetta ricetta;
 
         File path = new File(filePath);
 
@@ -39,7 +36,7 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if(path.exists()) {
-            String line = "";
+            String line;
             try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
@@ -103,9 +100,9 @@ public class CsvHelper {
                     logger.info("Start creating Dettagli Prescrizione...");
 
                     List<DettaglioPrescrizione> dettagliPrescrizione = new ArrayList<>();
-                    Integer startIndex = ricettaNumCampi;
+                    int startIndex = ricettaNumCampi;
 
-                   while(startIndex < values.size()){
+                    while(startIndex < values.size()){
                         DettaglioPrescrizione dettaglioPrescrizione = new DettaglioPrescrizione();
                         for(int i=startIndex; i<(startIndex + ricettaPrescrizioneNumCampi + 1);i++){
                             dettaglioPrescrizione.setCodiceProdotto(values.get(startIndex));
@@ -137,7 +134,7 @@ public class CsvHelper {
                     logger.info("End creating Dettagli Prescrizione");
 
                     ricetta.setDettagliPrescrizione(dettagliPrescrizione);
-                    logger.info("Ricetta successfully created: " + ricetta.toString());
+                    logger.info("Ricetta successfully created: " + ricetta);
                 }
             } else{
                 throw new RuntimeException("Il file in ingresso è vuoto");
@@ -150,7 +147,7 @@ public class CsvHelper {
     }
 
     public static RichiestaLottiNre readRichiestaLottiNreCsv(String filePath, String delimiter, Integer richiestaLottiNreNumCampi) throws Exception {
-        RichiestaLottiNre richiestaLottiNre = null;
+        RichiestaLottiNre richiestaLottiNre;
 
         File path = new File(filePath);
 
@@ -159,14 +156,11 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if (path.exists()) {
-            String line = "";
+            String line;
             try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
-
-                    // use comma as separator
                     String[] values = line.split(delimiter);
-
                     allValues.add(Arrays.asList(values));
                 }
 
@@ -188,7 +182,7 @@ public class CsvHelper {
                     richiestaLottiNre.setParamDimensioneLotto(values.get(1));
                     richiestaLottiNre.setCodiceFiscale(values.get(2));
 
-                    logger.info("Richiesta lotti nre successfully created: " + richiestaLottiNre.toString());
+                    logger.info("Richiesta lotti nre successfully created: " + richiestaLottiNre);
                 }
             } else {
                 throw new RuntimeException("Il file in ingresso è vuoto");
@@ -201,7 +195,7 @@ public class CsvHelper {
     }
 
     public static AnnullaRicetta readAnnullaRicettaCsv(String filePath, String delimiter, Integer annullaRicettaNumCampi) throws Exception {
-        AnnullaRicetta annullaRicetta = null;
+        AnnullaRicetta annullaRicetta;
 
 //        Path path = Paths.get(filePath);
         File path = new File(filePath);
@@ -211,14 +205,11 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if (path.exists()) {
-            String line = "";
+            String line;
             try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
-
-                    // use comma as separator
                     String[] values = line.split(delimiter);
-
                     allValues.add(Arrays.asList(values));
                 }
 
@@ -240,7 +231,7 @@ public class CsvHelper {
                     annullaRicetta.setCodiceFiscale(values.get(1));
                     annullaRicetta.setNre(values.get(2));
 
-                    logger.info("Annulla ricetta successfully created: " + annullaRicetta.toString());
+                    logger.info("Annulla ricetta successfully created: " + annullaRicetta);
                 }
             } else {
                 throw new RuntimeException("Il file in ingresso è vuoto");
@@ -253,7 +244,7 @@ public class CsvHelper {
     }
 
     public static RicettaMir readRicettaDpcmCsv(String filePath, String delimiter, Integer testataNumCampi, Integer ricettaNumCampi, Integer ricettaPrescrizioneNumCampi) throws Exception{
-        RicettaMir ricettaDpcm = null;
+        RicettaMir ricettaDpcm;
 
 //        Path path = Paths.get(filePath);
         File path = new File(filePath);
@@ -263,14 +254,11 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if(path.exists()) {
-            String line = "";
+            String line;
             try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
                 while ((line = br.readLine()) != null) {
-
-                    // use comma as separator
                     String[] values = line.split(delimiter, -1);
-
                     allValues.add(Arrays.asList(values));
                 }
 
@@ -333,7 +321,7 @@ public class CsvHelper {
                     logger.info("Start creating Prescrizioni...");
 
                     List<Prescrizione> prescrizioni = new ArrayList<>();
-                    Integer startIndex = (testataNumCampi + ricettaNumCampi);
+                    int startIndex = (testataNumCampi + ricettaNumCampi);
 
                     while(startIndex < values.size()){
                         Prescrizione prescrizione = new Prescrizione();
@@ -352,7 +340,7 @@ public class CsvHelper {
                     logger.info("End creating Prescrizioni");
 
                     ricettaDpcm.setPrescrizioni(prescrizioni);
-                    logger.info("Ricetta DPCM successfully created: " + ricetta.toString());
+                    logger.info("Ricetta DPCM successfully created: " + ricetta);
                 }
             } else{
                 throw new RuntimeException("Il file in ingresso è vuoto");
@@ -365,7 +353,7 @@ public class CsvHelper {
     }
 
     public static CertificatoMalattia readCertificatoMalattiaCsv(String filePath, String delimiter, Integer certificatoMalattiaNumCampi, Integer certificatoMalattiaInizioLettura) throws Exception{
-        CertificatoMalattia certificatoMalattia = null;
+        CertificatoMalattia certificatoMalattia;
 
         File path = new File(filePath);
 
@@ -374,7 +362,7 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if(path.exists()) {
-            String line = "";
+            String line;
             try (BufferedReader br = new BufferedReader(new FileReader(path))) {
                 while ((line = br.readLine()) != null) {
                     String[] values = line.split(delimiter, -1);
@@ -450,7 +438,7 @@ public class CsvHelper {
                     certificatoMalattia.setReperibilita(reperibilita);
                     certificatoMalattia.setMalattia(malattia);
 
-                    logger.info("Certificato malattia successfully created: " + certificatoMalattia.toString());
+                    logger.info("Certificato malattia successfully created: " + certificatoMalattia);
                 }
             } else{
                 throw new RuntimeException("Il file in ingresso è vuoto");
@@ -463,7 +451,7 @@ public class CsvHelper {
     }
 
     public static AnnullaCertificatoMalattia readAnnullaCertificatoMalattiaCsv(String filePath, String delimiter, Integer annullaCertificatoMalattiaNumCampi, Integer annullaCertificatoMalattiaInizioLettura) throws Exception{
-        AnnullaCertificatoMalattia annullaCertificatoMalattia = null;
+        AnnullaCertificatoMalattia annullaCertificatoMalattia;
 
         File path = new File(filePath);
 
@@ -472,7 +460,7 @@ public class CsvHelper {
         List<List<String>> allValues = new ArrayList<>();
 
         if(path.exists()) {
-            String line = "";
+            String line;
             try (BufferedReader br = new BufferedReader(new FileReader(path))) {
                 while ((line = br.readLine()) != null) {
                     String[] values = line.split(delimiter, -1);
@@ -508,7 +496,7 @@ public class CsvHelper {
                     annullaCertificatoMalattia.setLavoratore(lavoratore);
                     annullaCertificatoMalattia.setIdCertificato(values.get(annullaCertificatoMalattiaInizioLettura + 5));
 
-                    logger.info("Annulla certificato malattia successfully created: " + annullaCertificatoMalattia.toString());
+                    logger.info("Annulla certificato malattia successfully created: " + annullaCertificatoMalattia);
                 }
             } else{
                 throw new RuntimeException("Il file in ingresso è vuoto");

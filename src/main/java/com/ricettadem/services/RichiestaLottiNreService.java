@@ -19,7 +19,7 @@ import java.io.FileWriter;
 @Service
 public class RichiestaLottiNreService {
 
-    private static Logger logger = LoggerFactory.getLogger(RichiestaLottiNreService.class);
+    private static final Logger logger = LoggerFactory.getLogger(RichiestaLottiNreService.class);
 
     private static final String ESITO_OK = "00";
 
