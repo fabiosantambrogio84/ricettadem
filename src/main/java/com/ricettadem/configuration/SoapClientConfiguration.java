@@ -22,6 +22,7 @@ import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import javax.net.ssl.SSLContext;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -30,9 +31,13 @@ import java.util.List;
 
 
 @Configuration
+@SuppressWarnings("unused")
 public class SoapClientConfiguration {
 
-    private static Logger logger = LoggerFactory.getLogger(SoapClientConfiguration.class);
+    private final static Logger logger = LoggerFactory.getLogger(SoapClientConfiguration.class);
+
+    @Value("${csv.delimiter}")
+    private String delimiter;
 
     @Value("${ws.credentials.file-path}")
     private String credentialsFilePath;
@@ -260,11 +265,11 @@ public class SoapClientConfiguration {
     private String createCredentials(String filePath) throws Exception{
         logger.info("Reading credentials...");
 
-        String base64Credentials = "";
+        String base64Credentials;
 
         List<String> list = new ArrayList<>();
 
-        String line = "";
+        String line;
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
             while ((line = br.readLine()) != null) {
@@ -278,11 +283,11 @@ public class SoapClientConfiguration {
         }
 
         String credentials = list.get(0);
-        credentials = credentials.replace(";", ":");
+        credentials = credentials.replace(delimiter, ":");
 
         logger.info("Credentials retrieved: " + credentials);
 
-        base64Credentials = DatatypeConverter.printBase64Binary(credentials.getBytes("utf-8"));
+        base64Credentials = DatatypeConverter.printBase64Binary(credentials.getBytes(StandardCharsets.UTF_8));
 
         return base64Credentials;
     }
