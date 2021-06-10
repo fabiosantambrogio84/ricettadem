@@ -283,6 +283,8 @@ public class SoapClientConfiguration {
         }
 
         String credentials = list.get(0);
+
+        delimiter = delimiter.replace("\\","");
         credentials = credentials.replace(delimiter, ":");
 
         logger.info("Credentials retrieved: " + credentials);

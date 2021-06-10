@@ -63,7 +63,7 @@ public class CertificatoMalattiaService {
         logger.info("INVIO CERTIFICATO MALATTIA");
         logger.info("Parsing the file...");
         CertificatoMalattia certificatoMalattia = CsvHelper.readCertificatoMalattiaCsv(certificatoMalattiaFilePath, delimiter, certificatoMalattiaNumCampi, certificatoMalattiaInizioLettura);
-        logger.info("Certificato malattia retrieved from file: " + certificatoMalattia.toString());
+        logger.info("Certificato malattia retrieved from file: " + certificatoMalattia);
 
         logger.info("Creating the soap request...");
         InvioMalattiaRequest request = soapSpringClientComponent.createCertificatoMalattiaRichiesta(certificatoMalattia);
