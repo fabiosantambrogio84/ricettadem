@@ -22,7 +22,7 @@
 				</xs:element>
 				<xs:element name="cfMedico" type="td:cfMedicoType">
 					<xs:annotation>
-						<xs:documentation>CF del medico a cui è associato l'NRE</xs:documentation>
+						<xs:documentation>CF del medico a cui e' associato l'NRE</xs:documentation>
 					</xs:annotation>
 				</xs:element>
 			</xs:sequence>

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -108,6 +109,7 @@ public class SOAPSpringClientComponent {
                 dettaglioPrescrizioneType.setCondErogabilita(dettaglioPrescrizione.getCondizioneErogabilita());
                 dettaglioPrescrizioneType.setApproprPrescrittiva(dettaglioPrescrizione.getAppropriatezzaPrescrittiva());
                 dettaglioPrescrizioneType.setPatologia(dettaglioPrescrizione.getPatologia());
+                setIfNotNull(dettaglioPrescrizioneType, "setNumsedute", dettaglioPrescrizione.getNumSedute());
 
                 elencoDettagliPrescrizioniType.getDettaglioPrescrizione().add(dettaglioPrescrizioneType);
             }
@@ -245,6 +247,13 @@ public class SOAPSpringClientComponent {
             logger.error("Error parsing date '" + dateString + "'");
         }
         return result;
+    }
+
+    private void setIfNotNull(Object object, String methodName, String value) throws Exception{
+        if (value != null && !value.equals("")) {
+            Method setNameMethod = object.getClass().getMethod(methodName, String.class);
+            setNameMethod.invoke(object, value);
+        }
     }
 
 }

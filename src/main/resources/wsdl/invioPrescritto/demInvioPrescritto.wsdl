@@ -37,5 +37,4 @@
 			<soap:address location="http://localhost:9080/DemRicettaPrescrittoServicesWeb/services/demInvioPrescritto"/>
 		</wsdl:port>
 	</wsdl:service>
-	<wsdl:documentation>Versione 1.2</wsdl:documentation>
 </wsdl:definitions>

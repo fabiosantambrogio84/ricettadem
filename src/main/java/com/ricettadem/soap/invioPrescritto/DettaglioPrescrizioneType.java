@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.3.0 
 // Vedere <a href="https://javaee.github.io/jaxb-v2/">https://javaee.github.io/jaxb-v2/</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2021.06.10 alle 04:43:47 PM CEST 
+// Generato il: 2024.02.01 alle 11:04:50 AM CET 
 //
 
 
@@ -43,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="condErogabilita" type="{http://tipodati.xsd.dem.sanita.finanze.it}maxString10" minOccurs="0"/&gt;
  *         &lt;element name="approprPrescrittiva" type="{http://tipodati.xsd.dem.sanita.finanze.it}maxString10" minOccurs="0"/&gt;
  *         &lt;element name="patologia" type="{http://tipodati.xsd.dem.sanita.finanze.it}maxString10" minOccurs="0"/&gt;
+ *         &lt;element name="numsedute" type="{http://tipodati.xsd.dem.sanita.finanze.it}integerMax3Type" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -71,7 +72,8 @@ import javax.xml.bind.annotation.XmlType;
     "numeroNota",
     "condErogabilita",
     "approprPrescrittiva",
-    "patologia"
+    "patologia",
+    "numsedute"
 })
 public class DettaglioPrescrizioneType {
 
@@ -95,6 +97,7 @@ public class DettaglioPrescrizioneType {
     protected String condErogabilita;
     protected String approprPrescrittiva;
     protected String patologia;
+    protected String numsedute;
 
     /**
      * Recupera il valore della proprietà codProdPrest.
@@ -550,6 +553,30 @@ public class DettaglioPrescrizioneType {
      */
     public void setPatologia(String value) {
         this.patologia = value;
+    }
+
+    /**
+     * Recupera il valore della proprietà numsedute.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getNumsedute() {
+        return numsedute;
+    }
+
+    /**
+     * Imposta il valore della proprietà numsedute.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setNumsedute(String value) {
+        this.numsedute = value;
     }
 
 }

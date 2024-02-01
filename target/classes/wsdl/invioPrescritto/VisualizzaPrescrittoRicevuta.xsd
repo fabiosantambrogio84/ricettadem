@@ -232,7 +232,7 @@
 				</xs:element>
 				<xs:element name="ElencoNota" type="td:elencoNotaType" minOccurs="0">
 					<xs:annotation>
-						<xs:documentation>Ripetizione di note decreto Lorenzin</xs:documentation>
+						<xs:documentation>Ripetizione di note DPCM 12 gen 2017</xs:documentation>
 					</xs:annotation>
 				</xs:element>
 			</xs:sequence>

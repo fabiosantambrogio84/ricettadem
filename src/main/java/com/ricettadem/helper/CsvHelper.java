@@ -126,6 +126,7 @@ public class CsvHelper {
                                 dettaglioPrescrizione.setCondizioneErogabilita(values.get(startIndex + 16));
                                 dettaglioPrescrizione.setAppropriatezzaPrescrittiva(values.get(startIndex + 17));
                                 dettaglioPrescrizione.setPatologia(values.get(startIndex + 18));
+                                dettaglioPrescrizione.setNumSedute(values.get(startIndex + 19));
                             }
                         }
                         dettagliPrescrizione.add(dettaglioPrescrizione);

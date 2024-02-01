@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.3.0 
 // Vedere <a href="https://javaee.github.io/jaxb-v2/">https://javaee.github.io/jaxb-v2/</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2021.06.10 alle 04:43:47 PM CEST 
+// Generato il: 2024.02.01 alle 11:04:50 AM CET 
 //
 
 
@@ -114,6 +114,22 @@ public class ObjectFactory {
      */
     public InvioPrescrittoRicevuta createInvioPrescrittoRicevuta() {
         return new InvioPrescrittoRicevuta();
+    }
+
+    /**
+     * Create an instance of {@link VisualizzaPrescrittoRichiesta }
+     * 
+     */
+    public VisualizzaPrescrittoRichiesta createVisualizzaPrescrittoRichiesta() {
+        return new VisualizzaPrescrittoRichiesta();
+    }
+
+    /**
+     * Create an instance of {@link VisualizzaPrescrittoRicevuta }
+     * 
+     */
+    public VisualizzaPrescrittoRicevuta createVisualizzaPrescrittoRicevuta() {
+        return new VisualizzaPrescrittoRicevuta();
     }
 
 }

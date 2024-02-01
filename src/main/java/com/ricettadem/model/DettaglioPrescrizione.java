@@ -23,6 +23,7 @@ public class DettaglioPrescrizione {
     private String condizioneErogabilita;
     private String appropriatezzaPrescrittiva;
     private String patologia;
+    private String numSedute;
 
     public String getCodiceProdotto() {
         return codiceProdotto;
@@ -176,9 +177,17 @@ public class DettaglioPrescrizione {
         this.patologia = patologia;
     }
 
+    public String getNumSedute() {
+        return numSedute;
+    }
+
+    public void setNumSedute(String numSedute) {
+        this.numSedute = numSedute;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(codiceProdotto, descrizioneProdotto, codiceGruppoEquivalenza, descrizioneGruppoEquivalenza, testoLibero, descrizioneTestoLibero, nonSostituito, noteMotivazioni, codiceMotivazione, notaProdotto, quantita, informazioniPrescrizione, informazioniPrescrizione2, codiceCatalogoPrescrizione, tipoAccesso1, numeroNota, condizioneErogabilita, appropriatezzaPrescrittiva, patologia);
+        return Objects.hash(codiceProdotto, descrizioneProdotto, codiceGruppoEquivalenza, descrizioneGruppoEquivalenza, testoLibero, descrizioneTestoLibero, nonSostituito, noteMotivazioni, codiceMotivazione, notaProdotto, quantita, informazioniPrescrizione, informazioniPrescrizione2, codiceCatalogoPrescrizione, tipoAccesso1, numeroNota, condizioneErogabilita, appropriatezzaPrescrittiva, patologia, numSedute);
     }
 
     @Override
@@ -208,36 +217,34 @@ public class DettaglioPrescrizione {
                 Objects.equals(numeroNota , that.numeroNota ) &&
                 Objects.equals(condizioneErogabilita , that.condizioneErogabilita ) &&
                 Objects.equals(appropriatezzaPrescrittiva , that.appropriatezzaPrescrittiva ) &&
-                Objects.equals(patologia, that.patologia);
+                Objects.equals(patologia, that.patologia) &&
+                Objects.equals(numSedute, that.numSedute);
     }
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
 
-        result.append("{");
-        result.append(" codiceProdotto : " + codiceProdotto );
-        result.append(", descrizioneProdotto : " + descrizioneProdotto );
-        result.append(", codiceGruppoEquivalenza : " + codiceGruppoEquivalenza );
-        result.append(", descrizioneGruppoEquivalenza : " + descrizioneGruppoEquivalenza );
-        result.append(", testoLibero : " + testoLibero );
-        result.append(", descrizioneTestoLibero : " + descrizioneTestoLibero );
-        result.append(", nonSostituito : " + nonSostituito );
-        result.append(", noteMotivazioni : " + noteMotivazioni );
-        result.append(", codiceMotivazione : " + codiceMotivazione );
-        result.append(", notaProdotto : " + notaProdotto );
-        result.append(", quantita : " + quantita );
-        result.append(", informazioniPrescrizione : " + informazioniPrescrizione );
-        result.append(", informazioniPrescrizione2 : " + informazioniPrescrizione2 );
-        result.append(", codiceCatalogoPrescrizione : " + codiceCatalogoPrescrizione );
-        result.append(", tipoAccesso1 : " + tipoAccesso1 );
-        result.append(", numeroNota : " + numeroNota );
-        result.append(", condizioneErogabilita : " + condizioneErogabilita );
-        result.append(", appropriatezzaPrescrittiva : " + appropriatezzaPrescrittiva );
-        result.append(", patologia: " + patologia);
-
-        result.append("}");
-
-        return result.toString();
+        return "{" +
+                " codiceProdotto : " + codiceProdotto +
+                ", descrizioneProdotto : " + descrizioneProdotto +
+                ", codiceGruppoEquivalenza : " + codiceGruppoEquivalenza +
+                ", descrizioneGruppoEquivalenza : " + descrizioneGruppoEquivalenza +
+                ", testoLibero : " + testoLibero +
+                ", descrizioneTestoLibero : " + descrizioneTestoLibero +
+                ", nonSostituito : " + nonSostituito +
+                ", noteMotivazioni : " + noteMotivazioni +
+                ", codiceMotivazione : " + codiceMotivazione +
+                ", notaProdotto : " + notaProdotto +
+                ", quantita : " + quantita +
+                ", informazioniPrescrizione : " + informazioniPrescrizione +
+                ", informazioniPrescrizione2 : " + informazioniPrescrizione2 +
+                ", codiceCatalogoPrescrizione : " + codiceCatalogoPrescrizione +
+                ", tipoAccesso1 : " + tipoAccesso1 +
+                ", numeroNota : " + numeroNota +
+                ", condizioneErogabilita : " + condizioneErogabilita +
+                ", appropriatezzaPrescrittiva : " + appropriatezzaPrescrittiva +
+                ", patologia: " + patologia +
+                ", numSedute: " + numSedute +
+                "}";
     }
 }

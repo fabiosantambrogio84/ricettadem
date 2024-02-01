@@ -1,8 +1,9 @@
-<xs:schema xmlns="http://interroganreutilrichiesta.xsd.dem.sanita.fvg.it" xmlns:td="http://tipodati.xsd.dem.sanita.fvg.it" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://interroganreutilrichiesta.xsd.dem.sanita.fvg.it" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xs:import namespace="http://tipodati.xsd.dem.sanita.fvg.it" schemaLocation="TipiDati.xsd"/>
-		<xs:annotation>
-			<xs:documentation>Versione 1.2</xs:documentation>
-		</xs:annotation>
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://interroganreutilrichiesta.xsd.dem.sanita.finanze.it" xmlns:td="http://tipodati.xsd.dem.sanita.finanze.it" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://interroganreutilrichiesta.xsd.dem.sanita.finanze.it" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://tipodati.xsd.dem.sanita.finanze.it" schemaLocation="TipiDatiInterrogaNreUtilizzati.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Versione 1.2</xs:documentation>
+	</xs:annotation>
 	<xs:element name="InterrogaNreUtilRichiesta">
 		<xs:annotation>
 			<xs:documentation>Elemento base per la richiesta di interrogazione dei nre utilizzati per numerare un prescritto</xs:documentation>
@@ -25,9 +26,9 @@
 					</xs:annotation>
 				</xs:element>
 				<xs:element name="codLotto" type="td:codLottoType" minOccurs="0">
-						<xs:annotation>
-							<xs:documentation>Numero lotto </xs:documentation>
-						</xs:annotation>
+					<xs:annotation>
+						<xs:documentation>Numero lotto </xs:documentation>
+					</xs:annotation>
 				</xs:element>
 				<xs:element name="cfMedico" type="td:cfMedicoType">
 					<xs:annotation>
@@ -41,7 +42,7 @@
 				</xs:element>
 				<xs:element name="tipoPrescr" type="td:tipoPrescType" minOccurs="0">
 					<xs:annotation>
-						<xs:documentation>Tipologia di prescrizione</xs:documentation>
+						<xs:documentation>Numero lotto </xs:documentation>
 					</xs:annotation>
 				</xs:element>
 				<xs:element name="dataCompilazioneRicettaDal" type="td:dataOraType" minOccurs="0">
